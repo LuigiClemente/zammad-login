@@ -11,7 +11,7 @@ graph TD
 
 ## Overview
 
-This comprehensive documentation guides you through the seamless implementation of Zammad as an authentication provider for your Next.js application. The authentication flow accommodates various scenarios, including the absence or presence of a welcome ticket and the dynamic handling of ticket states.
+This documentation guides you through the implementation of Zammad as an authentication provider for our Next.js application. The authentication flow accommodates various scenarios, including the absence or presence of a welcome ticket and the dynamic handling of ticket states.
 
 ### Zammad API Links:
 
