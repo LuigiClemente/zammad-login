@@ -10,6 +10,7 @@ import Stepper from '@/components/Stepper'
 import PageLogin from '@/components/PageLogin'
 import { SearchConfig, SearchProvider } from 'pliny/search'
 import { useRouter } from 'next/navigation'
+import { signIn } from "next-auth/react"; // Import the signIn function from NextAuth for authentication.
 interface Props {
   children: ReactNode
 }
@@ -34,8 +35,13 @@ const Wrapper = ({ children }: Props) => {
     setShowSplash(false)
     console.log('isRoute ::>', isRoute)
   }
-  const loginCheck = () => {
+  const loginCheck = async() => {
     setLogin(true)
+    await signIn("zammad", {
+      redirect: false,
+      callbackUrl: "http://localhost:8080/blog",
+    })
+    
   }
   if (login === null) {
     return <div>Loading</div>
