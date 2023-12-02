@@ -2,7 +2,7 @@
 import siteMetadata from '@/data/siteMetadata'
 import { Inter } from 'next/font/google'
 
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useState } from 'react'
 import Footer from './Footer'
 import Header from './Header'
 
@@ -10,7 +10,10 @@ import Stepper from '@/components/Stepper'
 import PageLogin from '@/components/PageLogin'
 import { SearchConfig, SearchProvider } from 'pliny/search'
 import { useRouter } from 'next/navigation'
-import { signIn } from "next-auth/react"; // Import the signIn function from NextAuth for authentication.
+import { signIn, useSession } from 'next-auth/react' // Import the signIn function from NextAuth for authentication.
+import { authOptions } from '@/lib/auth'
+import axios from 'axios'
+
 interface Props {
   children: ReactNode
 }
@@ -21,8 +24,8 @@ const inter = Inter({
 
 const Wrapper = ({ children }: Props) => {
   const [showSplash, setShowSplash] = useState(true)
-  const [login, setLogin] = useState<boolean>(false)
   const [isRoute, setIsRoute] = useState<boolean>(true)
+  const { data: session, status } = useSession()
   // useEffect(() => {
   //   const timeoutId = setTimeout(() => {
   //     setShowSplash(false)
@@ -35,18 +38,24 @@ const Wrapper = ({ children }: Props) => {
     setShowSplash(false)
     console.log('isRoute ::>', isRoute)
   }
-  const loginCheck = async() => {
-    setLogin(true)
-    await signIn("zammad", {
+  useEffect(() => {
+    ;(async () => {
+      if (status == 'authenticated') {
+        const res = await axios.get('http://localhost:3000/api/v1/users', { withCredentials: true })
+        console.log(res.data, 'res.data')
+      }
+    })()
+  }, [status])
+  const loginCheck = async () => {
+    await signIn('zammad', {
       redirect: false,
-      callbackUrl: "http://localhost:8080/blog",
+      callbackUrl: 'http://localhost:8080/blog',
     })
-    
   }
-  if (login === null) {
+  if (status == 'loading') {
     return <div>Loading</div>
   }
-  if (!login) {
+  if (status == 'unauthenticated') {
     return (
       <div className="mt-10 pt-10">
         <PageLogin loginCheck={loginCheck} />

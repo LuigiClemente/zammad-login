@@ -11,6 +11,10 @@ import siteMetadata from '@/data/siteMetadata'
 import LayoutWrapper from '@/components/LayoutWrapper'
 import { ThemeProviders } from './theme-providers'
 import { Metadata } from 'next'
+import { SessionProvider } from 'next-auth/react'
+import { getServerSession } from 'next-auth/next'
+import { authOptions } from '@/lib/auth'
+import AuthProvider from './context/auth-context'
 
 const space_grotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -58,7 +62,9 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const session = await getServerSession(authOptions)
+
   return (
     <html
       lang={siteMetadata.language}
@@ -75,12 +81,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
       <link rel="alternate" type="application/rss+xml" href="/feed.xml" />
       <body className="bg-white text-black antialiased dark:bg-lightBlack dark:text-white">
-        <ThemeProviders>
-          <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
-          <SectionContainer>
-            <LayoutWrapper>{children}</LayoutWrapper>
-          </SectionContainer>
-        </ThemeProviders>
+        <AuthProvider session={session}>
+          <ThemeProviders>
+            <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
+            <SectionContainer>
+              <LayoutWrapper>{children}</LayoutWrapper>
+            </SectionContainer>
+          </ThemeProviders>
+        </AuthProvider>
       </body>
     </html>
   )

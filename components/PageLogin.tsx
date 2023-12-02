@@ -12,8 +12,6 @@ interface Props {
 
 const PageLogin = ({ loginCheck }) => {
   const router = useRouter()
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
 
   function checkForLogins() {
     router.push('/home')
@@ -58,7 +56,7 @@ const PageLogin = ({ loginCheck }) => {
                               background:
                                 'linear-gradient(to right, #1d4b6a, #5ba7db, #328ecc, #0099FF)',
                             }}
-                            onClick={() => loginCheck(username, password)}
+                            onClick={() => loginCheck()}
                           >
                             Log in
                           </button>
