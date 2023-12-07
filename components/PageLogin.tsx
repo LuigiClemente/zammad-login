@@ -12,6 +12,8 @@ interface Props {
 
 const PageLogin = ({ loginCheck }) => {
   const router = useRouter()
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
 
   function checkForLogins() {
     router.push('/home')
@@ -46,6 +48,37 @@ const PageLogin = ({ loginCheck }) => {
 
                     <form>
                       <p className="mb-4">`{`${siteInfo.loginTitle}`}`</p>
+                      {/* <!--Username input--> */}
+                      <div className="mb-6">
+                        <p className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                          User Name
+                        </p>
+                        <input
+                          type="text"
+                          id="userName"
+                          className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                          placeholder=""
+                          value={username}
+                          onChange={(e) => setUsername(e.currentTarget.value)}
+                          required
+                        />
+                      </div>
+
+                      {/* <!--Password input--> */}
+                      <div className="mb-6">
+                        <p className="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                          Password
+                        </p>
+                        <input
+                          type="password"
+                          id="password"
+                          className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                          placeholder="•••••••••"
+                          value={password}
+                          onChange={(e) => setPassword(e.currentTarget.value)}
+                          required
+                        />
+                      </div>
                       {/* <!--Submit button--> */}
                       <div className="mb-12 pb-1 pt-1 text-center">
                         <div className="w-full">
@@ -56,7 +89,7 @@ const PageLogin = ({ loginCheck }) => {
                               background:
                                 'linear-gradient(to right, #1d4b6a, #5ba7db, #328ecc, #0099FF)',
                             }}
-                            onClick={() => loginCheck()}
+                            onClick={() => loginCheck(username, password)}
                           >
                             Log in
                           </button>
