@@ -159,7 +159,7 @@ const Wrapper = ({ children }: Props) => {
         `user_access_token`,
         {
           name: 'zammad-login',
-          permission: ['admin.ticket', 'ticket.agent', 'admin.tag'],
+          permission: ['ticket.agent'],
         },
         auth
       ),
