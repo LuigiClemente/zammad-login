@@ -1,6 +1,5 @@
-import Spinner from '@/components/Spinner'
-import { genPageMetadata } from 'app/seo'
 import siteMetadata from '@/data/siteMetadata'
+import { genPageMetadata } from 'app/seo'
 import Link from 'next/link'
 export const metadata = genPageMetadata({ title: 'Login' })
 export default function Login() {

@@ -8,7 +8,7 @@ import ThemeSwitch from './ThemeSwitch'
 
 const SplashHeader = ({ checkerRoutes }) => {
   return (
-    <header className="flex items-center justify-between py-10">
+    <header className="flex w-full items-center justify-between py-[2.5rem]">
       <div>
         <Link href="/" aria-label={siteMetadata.headerTitle}>
           <div
@@ -18,7 +18,7 @@ const SplashHeader = ({ checkerRoutes }) => {
             }}
           >
             {typeof siteMetadata.headerTitle === 'string' ? (
-              <div className="hidden h-6 text-2xl font-semibold sm:block">
+              <div className="dark:text-grey-900 hidden h-6 text-2xl font-semibold text-titleColorLM dark:text-neutral-100 sm:block">
                 {siteMetadata.headerTitle}
               </div>
             ) : (

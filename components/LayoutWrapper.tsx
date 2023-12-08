@@ -1,18 +1,18 @@
 'use client'
 import siteMetadata from '@/data/siteMetadata'
 import { Inter } from 'next/font/google'
-
-import { ReactNode, useCallback, useEffect, useState } from 'react'
+import { ReactNode, useEffect } from 'react'
 import Footer from './Footer'
 import Header from './Header'
 
-import Stepper from '@/components/Stepper'
 import PageLogin from '@/components/PageLogin'
 import { SearchConfig, SearchProvider } from 'pliny/search'
-import { useRouter } from 'next/navigation'
-import { signIn, useSession } from 'next-auth/react' // Import the signIn function from NextAuth for authentication.
-import { authOptions } from '@/lib/auth'
-import axios from 'axios'
+import { useAppProvider } from 'provider/AppProvider'
+import ForgetPass from './ForgetPass'
+import ResetForm from './ResetForm'
+
+import QuestionForm from './QuestionForm'
+import Stepper from './stepper/Stepper'
 import { HTTPClient } from '@/lib/axios'
 import Cookies from 'js-cookie'
 
@@ -25,87 +25,115 @@ const inter = Inter({
 })
 
 const Wrapper = ({ children }: Props) => {
-  const [showSplash, setShowSplash] = useState(true)
-  const [isRoute, setIsRoute] = useState<boolean>(true)
-  const [status, setStatus] = useState('loading')
-  const [authToken, setAuthToken] = useState('')
-  // useEffect(() => {
-  //   const timeoutId = setTimeout(() => {
-  //     setShowSplash(false)
-  //   }, 19000)
+  const appProviderContext = useAppProvider()
 
-  //   return () => clearTimeout(timeoutId)
-  // }, [])
+  if (!appProviderContext) {
+    return <div>Loading...</div>
+  }
+  const {
+    login,
+    setLogin,
+    setHasTicket,
+    hasTicket,
+    showSplash,
+    setShowSplash,
+    isForget,
+    setIsForget,
+    isRestForm,
+    setIsRestForm,
+    authToken,
+    setAuthToken,
+    email,
+    setEmail,
+    setCurrentStep,
+  } = appProviderContext
 
   const checkRoute = () => {
     setShowSplash(false)
-    console.log('isRoute ::>', isRoute)
   }
   useEffect(() => {
-    ;(async () => {
-      try {
-        // Check auth token
-        const authToken = Cookies.get('auth_token')
-        if (authToken && typeof authToken === 'string') {
-          const profile = (
-            await HTTPClient.getInstance().client.get('users/me', {
-              headers: {
-                Authorization: `Token token=${authToken}`,
-              },
-            })
-          ).data
-          if (profile.id && typeof authToken === 'string') {
-            setAuthToken(authToken)
-            setStatus('authenticated')
-            return
-          }
-        }
-      } catch (err) {
-        // pass
-      }
-      setStatus('unauthenticated')
-    })()
+    const authToken = Cookies.get('auth_token')
+    if (authToken && typeof authToken === 'string' && authToken.length) {
+      setAuthToken(authToken)
+    }
+    const email = localStorage.getItem('email')
+    if (email && typeof email === 'string' && email.length) {
+      setEmail(email)
+    }
   }, [])
+
   useEffect(() => {
+    let executeTimeout
     ;(async () => {
-      if (status == 'authenticated') {
-        const res = await axios.get('http://localhost:3000/api/v1/tags?object=Ticket&o_id=2', {
-          headers: {
-            Authorization: `Token token=${authToken}`,
-          },
-        })
-        // await axios.post(
-        //   'http://localhost:3000/api/v1/tickets',
-        //   {
-        //     title: 'Help me!',
-        //     group: 'Users',
-        //     customer: 'admin@example.com',
-        //     article: {
-        //       subject: 'My subject',
-        //       body: 'I am a message!',
-        //       type: 'note',
-        //       internal: false,
-        //     },
-        //   },
-        //   {
-        //     headers: {
-        //       Authorization: `Token token=${authToken}`,
-        //     },
-        //   }
-        // )
-        console.log(res.data, 'res.data')
+      if (authToken && authToken.length && email && email.length) {
+        // Check auth token
+        const res = (
+          await HTTPClient.getInstance().client.get('tickets/search', {
+            params: {
+              query: `Steps Ticket for Customer ${email}`,
+            },
+            headers: {
+              Authorization: `Token token=${authToken}`,
+            },
+          })
+        ).data
+        if (res.tickets) {
+          setLogin(true)
+        }
+        if (res.assets.Ticket) {
+          const ticket = Object.values(res.assets.Ticket)[0] as any
+
+          const execute = async () => {
+            const tagRes = await HTTPClient.getInstance().client.get(
+              `tags?object=Ticket&o_id=${ticket.id}`,
+              {
+                headers: {
+                  Authorization: `Token token=${authToken}`,
+                },
+              }
+            )
+            const { tags } = tagRes.data
+            let step = 0
+
+            for (let i = 5; i >= 1; --i) {
+              if (tags.find((tag) => tag == `step_${i}`)) {
+                step = i
+                break
+              }
+            }
+            if (ticket.close_at) {
+              step = 5
+            }
+
+            setCurrentStep(step)
+
+            executeTimeout = setTimeout(execute, 30 * 1000)
+          }
+          await execute()
+
+          showStepper()
+        }
       }
     })()
-  }, [authToken, status])
+    return () => {
+      clearTimeout(executeTimeout)
+    }
+  }, [authToken && authToken.length && email && email.length])
+
+  const checkRouteQuestion = () => {
+    setShowSplash(true)
+    setHasTicket(true)
+  }
+
   const loginCheck = async (username: string, password: string) => {
-    const access_tokens = (
-      await HTTPClient.getInstance().client.get('user_access_token', {
-        auth: {
-          username,
-          password,
-        },
-      })
-    ).data
+    const auth = {
+      auth: {
+        username,
+        password,
+      },
+    }
+    const access_tokens = (await HTTPClient.getInstance().client.get('user_access_token', auth))
+      .data
     const found_access_token = access_tokens.tokens.find((token) => token.name == 'zammad-login')
     const res = await Promise.all([
       HTTPClient.getInstance().client.post(
@@ -114,32 +142,74 @@ const Wrapper = ({ children }: Props) => {
           name: 'zammad-login',
           permission: ['admin.ticket', 'ticket.agent', 'admin.tag'],
         },
-        {
-          auth: {
-            username,
-            password,
-          },
-        }
+        auth
       ),
       found_access_token &&
-        HTTPClient.getInstance().client.delete(`user_access_token/${found_access_token.id}`, {
-          auth: {
-            username,
-            password,
-          },
-        }),
+        HTTPClient.getInstance().client.delete(`user_access_token/${found_access_token.id}`, auth),
     ])
+
     setAuthToken(res[0].data.token)
-    setStatus('authenticated')
+    setEmail(username)
     Cookies.set('auth_token', res[0].data.token)
+    localStorage.setItem('email', username)
+
+    if (!hasTicket) {
+      setShowSplash(false)
+    }
   }
-  if (status == 'loading') {
+  const forgetPassFunc = () => {
+    setIsRestForm(true)
+    console.log('Rest Btn')
+    setIsForget(false)
+  }
+
+  if (login === null) {
     return <div>Loading</div>
   }
-  if (status == 'unauthenticated') {
+
+  const showStepper = () => {
+    setShowSplash(true)
+    setHasTicket(true)
+    console.log('showStepper ::', showSplash)
+  }
+
+  const forgetPassHandler = () => {
+    setIsForget(true)
+  }
+
+  const redirectToLogin = () => {
+    setIsForget(false)
+    console.log('Redirect')
+  }
+
+  const restFormFunc = () => {
+    setIsRestForm(false)
+    setIsForget(false)
+    console.log('Rest Btn', isRestForm)
+  }
+
+  if (!login) {
+    if (isForget) {
+      return <ForgetPass loginCheck={forgetPassFunc} forgetPassHandler={redirectToLogin} />
+    } else if (isRestForm) {
+      return <ResetForm loginCheck={restFormFunc} />
+    } else {
+      return (
+        <div className="mt-30 container h-full pt-20">
+          <PageLogin loginCheck={loginCheck} forgetPassHandler={forgetPassHandler} />
+          {/* <Stepper checkerRoute={checkRoute} /> */}
+        </div>
+      )
+    }
+  }
+
+  // Handle the case when login is true here, if needed
+  // return some component or null based on your requirement
+
+  if (login && !hasTicket) {
     return (
-      <div className="mt-10 pt-10">
-        <PageLogin loginCheck={loginCheck} />
+      <div className=" w-full">
+        <QuestionForm checkerRoute={checkRouteQuestion} />
       </div>
     )
   }
@@ -148,10 +218,9 @@ const Wrapper = ({ children }: Props) => {
       {showSplash ? (
         <>
           <Stepper checkerRoute={checkRoute} />
-          {/* <StepperOne /> */}
         </>
       ) : (
-        <div className="flex h-screen flex-col justify-between font-sans">
+        <div className="flex h-screen flex-col justify-between ">
           <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>
             <Header />
             <main className="mb-auto">{children}</main>

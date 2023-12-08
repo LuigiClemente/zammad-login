@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
-import { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
+import { useEffect, useState } from 'react'
 
 const ThemeSwitch = () => {
   const [mounted, setMounted] = useState(false)
@@ -33,7 +33,7 @@ const ThemeSwitch = () => {
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 20 20"
         fill="currentColor"
-        className="h-6 w-6 text-gray-900 dark:text-gray-100"
+        className="h-6 w-6 text-titleColorLM dark:text-neutral-100 "
       >
         {mounted && (theme === 'dark' || resolvedTheme === 'dark') ? (
           <path

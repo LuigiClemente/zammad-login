@@ -1,20 +1,15 @@
 import 'css/tailwind.css'
 import 'pliny/search/algolia.css'
-
+import { ClerkProvider } from '@clerk/nextjs'
+import LayoutWrapper from '@/components/LayoutWrapper'
+import SectionContainer from '@/components/SectionContainer'
+import siteMetadata from '@/data/siteMetadata'
+import { Metadata } from 'next'
 import { Space_Grotesk } from 'next/font/google'
 import { Analytics, AnalyticsConfig } from 'pliny/analytics'
-import { SearchProvider, SearchConfig } from 'pliny/search'
-import Header from '@/components/Header'
-import SectionContainer from '@/components/SectionContainer'
-import Footer from '@/components/Footer'
-import siteMetadata from '@/data/siteMetadata'
-import LayoutWrapper from '@/components/LayoutWrapper'
 import { ThemeProviders } from './theme-providers'
-import { Metadata } from 'next'
-import { SessionProvider } from 'next-auth/react'
-import { getServerSession } from 'next-auth/next'
-import { authOptions } from '@/lib/auth'
-import AuthProvider from './context/auth-context'
+import { AppProvider } from 'provider/AppProvider'
+import { StateProvider } from 'provider/StateProvider'
 
 const space_grotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -62,9 +57,7 @@ export const metadata: Metadata = {
   },
 }
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const session = await getServerSession(authOptions)
-
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang={siteMetadata.language}
@@ -80,15 +73,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fff" />
       <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000" />
       <link rel="alternate" type="application/rss+xml" href="/feed.xml" />
-      <body className="bg-white text-black antialiased dark:bg-lightBlack dark:text-white">
-        <AuthProvider session={session}>
-          <ThemeProviders>
-            <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
-            <SectionContainer>
-              <LayoutWrapper>{children}</LayoutWrapper>
-            </SectionContainer>
-          </ThemeProviders>
-        </AuthProvider>
+      <body className="bg-lightGreen text-black antialiased dark:bg-lightBlack dark:text-white">
+        <ThemeProviders>
+          <ClerkProvider>
+            <AppProvider>
+              <StateProvider>
+                <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
+                <SectionContainer>
+                  <LayoutWrapper>{children}</LayoutWrapper>
+                </SectionContainer>
+              </StateProvider>
+            </AppProvider>
+          </ClerkProvider>
+        </ThemeProviders>
       </body>
     </html>
   )

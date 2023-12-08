@@ -28,8 +28,22 @@ module.exports = {
       colors: {
         primary: colors.blue,
         gray: colors.gray,
+        // lightBlack: '#34757b',
+        // blackDark: '#43969e',
         lightBlack: '#2f2f2f',
         blackDark: '#252525',
+        greenColor: '#5F9EA0',
+        // designColor: '#0093d4',
+        designColor: '#2563eb',
+        // red: '#5F9EA0',
+        lightGreen: '#f5f6fb', //this is for backend color need to change name
+        darkGreen: '#fff',
+        titleColorLM: '#000',
+        txt: '#494949',
+        txtWhite: '#fff',
+        txtlightGrey: '#f5f5f5',
+        subTitleLM: '#252525',
+        descLM: '#252525',
       },
       typography: ({ theme }) => ({
         DEFAULT: {
