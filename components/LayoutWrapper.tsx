@@ -1,7 +1,7 @@
 'use client'
 import siteMetadata from '@/data/siteMetadata'
 import { Inter } from 'next/font/google'
-import { ReactNode, useEffect } from 'react'
+import { ReactNode, useCallback, useEffect } from 'react'
 import Footer from './Footer'
 import Header from './Header'
 
@@ -62,6 +62,36 @@ const Wrapper = ({ children }: Props) => {
     }
   }, [])
 
+  const getTicketTags = useCallback(async (ticket: any) => {
+    const execute = async () => {
+      const tagRes = await HTTPClient.getInstance().client.get(
+        `tags?object=Ticket&o_id=${ticket.id}`,
+        {
+          headers: {
+            Authorization: `Token token=${authToken}`,
+          },
+        }
+      )
+      const { tags } = tagRes.data
+      let step = 0
+
+      for (let i = 5; i >= 1; --i) {
+        if (tags.find((tag) => tag == `step_${i}`)) {
+          step = i
+          break
+        }
+      }
+      if (ticket.close_at) {
+        step = 5
+      }
+
+      setCurrentStep(step)
+    }
+    await execute()
+
+    showStepper()
+  }, [authToken])
+
   useEffect(() => {
     let executeTimeout
     ;(async () => {
@@ -82,36 +112,7 @@ const Wrapper = ({ children }: Props) => {
         }
         if (res.assets.Ticket) {
           const ticket = Object.values(res.assets.Ticket)[0] as any
-
-          const execute = async () => {
-            const tagRes = await HTTPClient.getInstance().client.get(
-              `tags?object=Ticket&o_id=${ticket.id}`,
-              {
-                headers: {
-                  Authorization: `Token token=${authToken}`,
-                },
-              }
-            )
-            const { tags } = tagRes.data
-            let step = 0
-
-            for (let i = 5; i >= 1; --i) {
-              if (tags.find((tag) => tag == `step_${i}`)) {
-                step = i
-                break
-              }
-            }
-            if (ticket.close_at) {
-              step = 5
-            }
-
-            setCurrentStep(step)
-
-            executeTimeout = setTimeout(execute, 30 * 1000)
-          }
-          await execute()
-
-          showStepper()
+          await getTicketTags(ticket);
         }
       }
     })()
@@ -120,9 +121,27 @@ const Wrapper = ({ children }: Props) => {
     }
   }, [authToken && authToken.length && email && email.length])
 
-  const checkRouteQuestion = () => {
-    setShowSplash(true)
-    setHasTicket(true)
+  const checkRouteQuestion = async() => {
+    const res = await HTTPClient.getInstance().client.post(
+      'tickets',
+      {
+        title: `[ZAMMAD_BLOG] Steps Ticket for Customer ${email}`,
+        group: 'Users',
+        customer: email,
+        article: {
+          subject: 'Step Ticket',
+          body: 'This is step ticket!',
+          type: 'note',
+          internal: false,
+        },
+      },
+      {
+        headers: {
+          Authorization: `Token token=${authToken}`,
+        },
+      }
+    )
+    await getTicketTags(res.data);
   }
 
   const loginCheck = async (username: string, password: string) => {
