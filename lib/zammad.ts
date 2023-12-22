@@ -144,7 +144,7 @@ class ZammadApi {
   constructor(host: string, cubeContext: CubeContext) {
     // Class properties initialization
     this.host = host
-    this.token = process.env.ZAMMAD_TOKEN as string
+    this.token = process.env.NEXT_PUBLIC_ZAMMAD_TOKEN as string
     this.appId = cubeContext.contextToAppId(cubeContext)
     this.orchestratorId = cubeContext.contextToOrchestratorId(cubeContext)
 

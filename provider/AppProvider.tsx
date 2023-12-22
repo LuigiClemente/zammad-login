@@ -1,5 +1,6 @@
 'use client'
 import React, { createContext, useContext, useState } from 'react'
+import initHeaderNavLinks from '@/data/headerNavLinks'
 
 interface AppContextProps {
   hasTicket: boolean
@@ -18,6 +19,14 @@ interface AppContextProps {
   setEmail: React.Dispatch<React.SetStateAction<string>>
   currentStep: number
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>
+  headerNavLinks: {
+    href: string;
+    title: string;
+  }[],
+  setHeaderNavLinks: React.Dispatch<React.SetStateAction<{
+    href: string;
+    title: string;
+  }[]>>
 }
 
 const Context = createContext<AppContextProps | null>(null)
@@ -31,6 +40,7 @@ export const AppProvider = ({ children }) => {
   const [authToken, setAuthToken] = useState('')
   const [email, setEmail] = useState('')
   const [currentStep, setCurrentStep] = useState(1)
+  const [headerNavLinks, setHeaderNavLinks] = useState(initHeaderNavLinks)
 
   return (
     <Context.Provider
@@ -51,6 +61,8 @@ export const AppProvider = ({ children }) => {
         setEmail,
         currentStep,
         setCurrentStep,
+        headerNavLinks,
+        setHeaderNavLinks,
       }}
     >
       {children}

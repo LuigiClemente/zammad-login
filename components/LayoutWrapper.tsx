@@ -15,6 +15,7 @@ import QuestionForm from './QuestionForm'
 import Stepper from './stepper/Stepper'
 import { HTTPClient } from '@/lib/axios'
 import Cookies from 'js-cookie'
+import initHeaderNavLinks, { cubeheaderNavLinks } from '@/data/headerNavLinks'
 
 interface Props {
   children: ReactNode
@@ -46,6 +47,7 @@ const Wrapper = ({ children }: Props) => {
     email,
     setEmail,
     setCurrentStep,
+    setHeaderNavLinks
   } = appProviderContext
 
   const checkRoute = () => {
@@ -60,6 +62,32 @@ const Wrapper = ({ children }: Props) => {
     if (email && typeof email === 'string' && email.length) {
       setEmail(email)
     }
+
+    (async() => {
+      const res = await Promise.all(
+        [HTTPClient.getInstance().client.get(
+          `users/me`,
+          {
+            headers: {
+              Authorization: `Token token=${authToken}`,
+            },
+          }
+        ), HTTPClient.getInstance().client.get(
+          `roles`,
+          {
+            headers: {
+              Authorization: `Token token=${process.env.NEXT_PUBLIC_ZAMMAD_TOKEN}`,
+            },
+          }
+        )]
+      )
+      const userRoles = res[0].data.role_ids.map((id: number) => res[1].data.find((role: { id: number, name: string }) => role.id == id).name);
+      if (userRoles.includes("pro") || userRoles.includes("family")) {
+        setHeaderNavLinks(cubeheaderNavLinks)
+      } else {
+        setHeaderNavLinks(initHeaderNavLinks)
+      }
+    })()
   }, [])
 
   const getTicketTags = useCallback(async (ticket: any) => {
