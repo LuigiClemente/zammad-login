@@ -7,9 +7,7 @@ import { useAppProvider } from 'provider/AppProvider'
 const Header = () => {
   const appProviderContext = useAppProvider()
 
-  const {
-    headerNavLinks
-  } = appProviderContext || { headerNavLinks: [] }
+  const { headerNavLinks } = appProviderContext || { headerNavLinks: [] }
 
   return (
     <header className="flex items-center justify-between py-10">

@@ -33,7 +33,7 @@ export const StepOne = ({ stepRefs, checkerRoute, stepperData }) => {
                 {/* <Folder /> */}
                 {`${stepperData[0].title}`}
               </div>
-              <div className="color1 px-3 pb-6 text-txt color1">{`${stepperData[0].description}`}</div>
+              <div className="color1 color1 px-3 pb-6 text-txt">{`${stepperData[0].description}`}</div>
             </div>
           </div>
         </div>

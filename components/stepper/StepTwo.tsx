@@ -35,9 +35,7 @@ export const StepTwo = ({ stepRefs, router, checkerRoute, stepperData }) => {
                 {/* <Medicine /> */}
                 <span className="font color2 ml-2 text-3xl">{`${stepperData[1].title}`}</span>
               </div>
-              <div className="px-3 pb-6 text-txt color2">
-                {`${stepperData[1].description}`}
-              </div>
+              <div className="color2 px-3 pb-6 text-txt">{`${stepperData[1].description}`}</div>
             </div>
           </div>
         </div>
