@@ -27,7 +27,7 @@ interface AppContextProps {
   setHeaderNavLinks: React.Dispatch<React.SetStateAction<HeaderNavLinks>>
 }
 
-const Context = createContext<AppContextProps | null>(null)
+const Context = createContext<AppContextProps>({} as AppContextProps)
 
 export const AppProvider = ({ children }) => {
   const [hasTicket, setHasTicket] = useState(false)

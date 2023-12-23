@@ -25,12 +25,14 @@ const inter = Inter({
   subsets: ['latin'],
 })
 
+type Ticket = {
+  id: number
+  close_at: string
+}
+
 const Wrapper = ({ children }: Props) => {
   const appProviderContext = useAppProvider()
 
-  if (!appProviderContext) {
-    return <div>Loading...</div>
-  }
   const {
     login,
     setLogin,
@@ -93,7 +95,7 @@ const Wrapper = ({ children }: Props) => {
   }, [setShowSplash, setHasTicket])
 
   const getTicketTags = useCallback(
-    async (ticket: any) => {
+    async (ticket: Ticket) => {
       const execute = async () => {
         const tagRes = await HTTPClient.getInstance().client.get(
           `tags?object=Ticket&o_id=${ticket.id}`,
@@ -144,7 +146,7 @@ const Wrapper = ({ children }: Props) => {
           setLogin(true)
         }
         if (res.assets.Ticket) {
-          const ticket = Object.values(res.assets.Ticket)[0] as any
+          const ticket = Object.values(res.assets.Ticket)[0] as Ticket
           await getTicketTags(ticket)
         }
       }

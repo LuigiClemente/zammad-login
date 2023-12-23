@@ -15,10 +15,6 @@ const Stepper = ({ checkerRoute }) => {
   const router = useRouter()
   const appProviderContext = useAppProvider()
 
-  if (!appProviderContext) {
-    return <div>Loading...</div>
-  }
-
   const { currentStep } = appProviderContext
   const stepRefs = [
     useRef<HTMLDivElement>(null),
@@ -34,7 +30,7 @@ const Stepper = ({ checkerRoute }) => {
       router.push('/') // Replace '/your-target-page' with the actual target page path
       checkerRoute()
     }
-  }, [currentStep])
+  }, [currentStep, checkerRoute, router])
 
   const greens = [] as number[]
   const oranges = [] as number[]
