@@ -8,7 +8,7 @@ export const StepFive = ({ stepRefs, router, checkerRoute, stepperData }) => {
             ref={stepRefs[4]}
           >
             <div className="color5 text-3xl font-black ">{`${stepperData[4].step}`}</div>
-            <div className="dark:text-neutral-200 text-sm text-subTitleLM">{`${stepperData[4].title}`}</div>
+            <div className="text-sm text-subTitleLM dark:text-neutral-200">{`${stepperData[4].title}`}</div>
           </div>
         </div>
 
@@ -23,9 +23,7 @@ export const StepFive = ({ stepRefs, router, checkerRoute, stepperData }) => {
                 {/* <Beaker /> */}
                 {`${stepperData[4].title}`}
               </div>
-              <div className="px-3 pb-6 text-txt color5">
-                {`${stepperData[4].description}`}
-              </div>
+              <div className="color5 px-3 pb-6 text-txt">{`${stepperData[4].description}`}</div>
             </div>
           </div>
         </div>

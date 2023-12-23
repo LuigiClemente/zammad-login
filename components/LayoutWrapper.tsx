@@ -47,7 +47,7 @@ const Wrapper = ({ children }: Props) => {
     email,
     setEmail,
     setCurrentStep,
-    setHeaderNavLinks
+    setHeaderNavLinks,
   } = appProviderContext
 
   const checkRoute = () => {
@@ -63,62 +63,67 @@ const Wrapper = ({ children }: Props) => {
       setEmail(email)
     }
 
-    (async() => {
-      const res = await Promise.all(
-        [HTTPClient.getInstance().client.get(
-          `users/me`,
-          {
-            headers: {
-              Authorization: `Token token=${authToken}`,
-            },
-          }
-        ), HTTPClient.getInstance().client.get(
-          `roles`,
-          {
-            headers: {
-              Authorization: `Token token=${process.env.NEXT_PUBLIC_ZAMMAD_TOKEN}`,
-            },
-          }
-        )]
+    ;(async () => {
+      const res = await Promise.all([
+        HTTPClient.getInstance().client.get(`users/me`, {
+          headers: {
+            Authorization: `Token token=${authToken}`,
+          },
+        }),
+        HTTPClient.getInstance().client.get(`roles`, {
+          headers: {
+            Authorization: `Token token=${process.env.NEXT_PUBLIC_ZAMMAD_TOKEN}`,
+          },
+        }),
+      ])
+      const userRoles = res[0].data.role_ids.map(
+        (id: number) => res[1].data.find((role: { id: number; name: string }) => role.id == id).name
       )
-      const userRoles = res[0].data.role_ids.map((id: number) => res[1].data.find((role: { id: number, name: string }) => role.id == id).name);
-      if (userRoles.includes("pro") || userRoles.includes("family")) {
+      if (userRoles.includes('pro') || userRoles.includes('family')) {
         setHeaderNavLinks(cubeheaderNavLinks)
       } else {
         setHeaderNavLinks(initHeaderNavLinks)
       }
     })()
-  }, [])
+  }, [setAuthToken, setEmail, setHeaderNavLinks])
 
-  const getTicketTags = useCallback(async (ticket: any) => {
-    const execute = async () => {
-      const tagRes = await HTTPClient.getInstance().client.get(
-        `tags?object=Ticket&o_id=${ticket.id}`,
-        {
-          headers: {
-            Authorization: `Token token=${authToken}`,
-          },
+  const showStepper = useCallback(() => {
+    setShowSplash(true)
+    setHasTicket(true)
+  }, [setShowSplash, setHasTicket])
+
+  const getTicketTags = useCallback(
+    async (ticket: any) => {
+      const execute = async () => {
+        const tagRes = await HTTPClient.getInstance().client.get(
+          `tags?object=Ticket&o_id=${ticket.id}`,
+          {
+            headers: {
+              Authorization: `Token token=${authToken}`,
+            },
+          }
+        )
+        const { tags } = tagRes.data
+        let step = 0
+
+        for (let i = 5; i >= 1; --i) {
+          if (tags.find((tag) => tag == `step_${i}`)) {
+            step = i
+            break
+          }
         }
-      )
-      const { tags } = tagRes.data
-      let step = 0
-
-      for (let i = 5; i >= 1; --i) {
-        if (tags.find((tag) => tag == `step_${i}`)) {
-          step = i
-          break
+        if (ticket.close_at) {
+          step = 5
         }
-      }
-      if (ticket.close_at) {
-        step = 5
-      }
 
-      setCurrentStep(step)
-    }
-    await execute()
+        setCurrentStep(step)
+      }
+      await execute()
 
-    showStepper()
-  }, [authToken])
+      showStepper()
+    },
+    [authToken, setCurrentStep, showStepper]
+  )
 
   useEffect(() => {
     let executeTimeout
@@ -140,16 +145,16 @@ const Wrapper = ({ children }: Props) => {
         }
         if (res.assets.Ticket) {
           const ticket = Object.values(res.assets.Ticket)[0] as any
-          await getTicketTags(ticket);
+          await getTicketTags(ticket)
         }
       }
     })()
     return () => {
       clearTimeout(executeTimeout)
     }
-  }, [authToken && authToken.length && email && email.length])
+  }, [authToken, email, getTicketTags, setLogin])
 
-  const checkRouteQuestion = async() => {
+  const checkRouteQuestion = async () => {
     const res = await HTTPClient.getInstance().client.post(
       'tickets',
       {
@@ -169,7 +174,7 @@ const Wrapper = ({ children }: Props) => {
         },
       }
     )
-    await getTicketTags(res.data);
+    await getTicketTags(res.data)
   }
 
   const loginCheck = async (username: string, password: string) => {
@@ -212,12 +217,6 @@ const Wrapper = ({ children }: Props) => {
 
   if (login === null) {
     return <div>Loading</div>
-  }
-
-  const showStepper = () => {
-    setShowSplash(true)
-    setHasTicket(true)
-    console.log('showStepper ::', showSplash)
   }
 
   const forgetPassHandler = () => {

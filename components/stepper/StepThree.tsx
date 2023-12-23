@@ -33,9 +33,7 @@ export const StepThree = ({ stepRefs, router, checkerRoute, stepperData }) => {
                 {/* <Ambulance /> */}
                 <span className="font color color3 ml-2 text-3xl">{`${stepperData[2].title}`}</span>
               </div>
-              <div className="px-3 pb-6 text-txt color3">
-                {`${stepperData[2].description}`}
-              </div>
+              <div className="color3 px-3 pb-6 text-txt">{`${stepperData[2].description}`}</div>
             </div>
           </div>
         </div>
