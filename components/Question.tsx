@@ -14,6 +14,7 @@ const Question = ({
   stepValueChecker,
   handleOptionClick,
   isError,
+  image,
 }) => {
   const [selectedOption, setSelectedOption] = useState('')
 
@@ -126,7 +127,7 @@ const Question = ({
 
   return (
     <div className="h-full min-h-full w-full">
-      <Image src={displayImage} width={180} height={580} alt="avatar" className="h-100 w-full" />
+      <Image src={`/static/images/question/${image}`} width={672} height={385} alt="avatar" className="h-100 w-full" />
       <div>
         <h3 className="regal-black mb-5 mt-5 font-sans font-medium text-subTitleLM dark:text-gray-100">
           {question}

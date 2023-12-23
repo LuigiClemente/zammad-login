@@ -159,6 +159,7 @@ const QuestionForm = ({ checkerRoute }) => {
           question={questionsList[currentQuestion].question}
           options={questionsList[currentQuestion].options}
           type={questionsList[currentQuestion].type}
+          image={questionsList[currentQuestion].image}
           register={register}
           error={errors}
           name={questionsList[currentQuestion].name}
