@@ -85,7 +85,12 @@ const Wrapper = ({ children }: Props) => {
         setHeaderNavLinks(initHeaderNavLinks)
       }
     })()
-  }, [])
+  }, [setAuthToken, setEmail, setHeaderNavLinks])
+
+  const showStepper = useCallback(() => {
+    setShowSplash(true)
+    setHasTicket(true)
+  }, [setShowSplash, setHasTicket])
 
   const getTicketTags = useCallback(
     async (ticket: any) => {
@@ -117,7 +122,7 @@ const Wrapper = ({ children }: Props) => {
 
       showStepper()
     },
-    [authToken]
+    [authToken, setCurrentStep, showStepper]
   )
 
   useEffect(() => {
@@ -147,7 +152,7 @@ const Wrapper = ({ children }: Props) => {
     return () => {
       clearTimeout(executeTimeout)
     }
-  }, [authToken && authToken.length && email && email.length])
+  }, [authToken, email, getTicketTags, setLogin])
 
   const checkRouteQuestion = async () => {
     const res = await HTTPClient.getInstance().client.post(
@@ -212,12 +217,6 @@ const Wrapper = ({ children }: Props) => {
 
   if (login === null) {
     return <div>Loading</div>
-  }
-
-  const showStepper = () => {
-    setShowSplash(true)
-    setHasTicket(true)
-    console.log('showStepper ::', showSplash)
   }
 
   const forgetPassHandler = () => {

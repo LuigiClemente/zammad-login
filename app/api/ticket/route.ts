@@ -8,11 +8,11 @@ const cubeContext = {
     // TODO: Change tenant_id
     tenant_id: 'undefined',
   },
-  contextToAppId: ({ securityContext }: any) => {
+  contextToAppId: ({ securityContext }: typeof cubeContext) => {
     return `CUBE_APP_${securityContext.tenant_id}`
   },
 
-  contextToOrchestratorId: ({ securityContext }: any) => {
+  contextToOrchestratorId: ({ securityContext }: typeof cubeContext) => {
     return `CUBE_APP_${securityContext.tenant_id}`
   },
 }
@@ -33,7 +33,7 @@ const handler = async (req: Request) => {
   await zammadApi.verifyRequest(signature, buf)
 
   const json = JSON.parse(buf.toString())
-  console.log(json);
+  console.log(json)
 
   // const authorFilePath = path.resolve(`data/authors/author-${json.article.id}.mdx`)
   // await writeFile(

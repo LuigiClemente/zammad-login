@@ -3,11 +3,11 @@ import Link from './Link'
 import MobileNav from './MobileNav'
 import SearchButton from './SearchButton'
 import ThemeSwitch from './ThemeSwitch'
-import { useAppProvider } from 'provider/AppProvider'
+import { HeaderNavLinks, useAppProvider } from 'provider/AppProvider'
 const Header = () => {
   const appProviderContext = useAppProvider()
 
-  const { headerNavLinks } = appProviderContext || { headerNavLinks: [] }
+  const { headerNavLinks } = appProviderContext || { headerNavLinks: [] as HeaderNavLinks }
 
   return (
     <header className="flex items-center justify-between py-10">

@@ -1,7 +1,7 @@
 'use client'
 import React, { createContext, useContext, useState } from 'react'
 import initHeaderNavLinks from '@/data/headerNavLinks'
-type HeaderNavLinks = {
+export type HeaderNavLinks = {
   href: string;
   title: string;
 }[]

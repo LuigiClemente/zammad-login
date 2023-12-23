@@ -8,11 +8,11 @@ const cubeContext = {
     // TODO: Change tenant_id
     tenant_id: 'undefined',
   },
-  contextToAppId: ({ securityContext }: any) => {
+  contextToAppId: ({ securityContext }: typeof cubeContext) => {
     return `CUBE_APP_${securityContext.tenant_id}`
   },
 
-  contextToOrchestratorId: ({ securityContext }: any) => {
+  contextToOrchestratorId: ({ securityContext }: typeof cubeContext) => {
     return `CUBE_APP_${securityContext.tenant_id}`
   },
 }
