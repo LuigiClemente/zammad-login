@@ -59,6 +59,8 @@ const Wrapper = ({ children }: Props) => {
     const authToken = Cookies.get('auth_token')
     if (authToken && typeof authToken === 'string' && authToken.length) {
       setAuthToken(authToken)
+    } else {
+      return;
     }
     const email = localStorage.getItem('email')
     if (email && typeof email === 'string' && email.length) {

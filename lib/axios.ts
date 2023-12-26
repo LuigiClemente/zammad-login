@@ -6,7 +6,7 @@ export class HTTPClient {
 
   private constructor() {
     const configs: AxiosRequestConfig = {
-      baseURL: process.env.NEXT_PUBLIC_API_LINK,
+      baseURL: `${process.env.NEXT_PUBLIC_ZAMMAD_HOST}/api/v1/`,
       timeout: 15000,
       responseType: 'json',
     }

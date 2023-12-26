@@ -4,6 +4,8 @@ import MobileNav from './MobileNav'
 import SearchButton from './SearchButton'
 import ThemeSwitch from './ThemeSwitch'
 import { HeaderNavLinks, useAppProvider } from 'provider/AppProvider'
+import Cookies from 'js-cookie'
+
 const Header = () => {
   const appProviderContext = useAppProvider()
 
@@ -36,6 +38,12 @@ const Header = () => {
               <Link
                 key={link.title}
                 href={link.href}
+                onClick={() => {
+                  if (link.title == "logout") {
+                    Cookies.remove('auth_token')
+                    localStorage.removeItem('email')
+                  }
+                }}
                 className="hidden font-medium text-gray-900 dark:text-gray-100 sm:block"
               >
                 {link.title}

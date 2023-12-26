@@ -17,7 +17,7 @@ const cubeContext = {
   },
 }
 
-const zammadApi = new ZammadApi(process.env.ZAMMAD_HOST as string, cubeContext)
+const zammadApi = new ZammadApi(process.env.NEXT_PUBLIC_ZAMMAD_HOST as string, cubeContext)
 
 const handler = async (req: Request) => {
   const headersList = headers()
