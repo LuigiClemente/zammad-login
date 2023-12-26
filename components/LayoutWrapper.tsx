@@ -60,7 +60,7 @@ const Wrapper = ({ children }: Props) => {
     if (authToken && typeof authToken === 'string' && authToken.length) {
       setAuthToken(authToken)
     } else {
-      return;
+      return
     }
     const email = localStorage.getItem('email')
     if (email && typeof email === 'string' && email.length) {

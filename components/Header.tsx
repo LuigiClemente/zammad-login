@@ -39,7 +39,7 @@ const Header = () => {
                 key={link.title}
                 href={link.href}
                 onClick={() => {
-                  if (link.title == "logout") {
+                  if (link.title == 'logout') {
                     Cookies.remove('auth_token')
                     localStorage.removeItem('email')
                   }
