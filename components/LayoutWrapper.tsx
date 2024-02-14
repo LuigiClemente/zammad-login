@@ -83,7 +83,7 @@ const Wrapper = ({ children }: Props) => {
       const userRoles = res[0].data.role_ids.map(
         (id: number) => res[1].data.find((role: { id: number; name: string }) => role.id == id).name
       )
-      if (userRoles.includes('pro') || userRoles.includes('family')) {
+      if (userRoles.includes('Agent')) {
         setHeaderNavLinks(cubeheaderNavLinks)
       } else {
         setHeaderNavLinks(initHeaderNavLinks)
