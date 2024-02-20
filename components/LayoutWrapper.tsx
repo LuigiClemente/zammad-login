@@ -189,7 +189,9 @@ const Wrapper = ({ children }: Props) => {
     }
     const access_tokens = (await HTTPClient.getInstance().client.get('user_access_token', auth))
       .data
-    const found_access_token = access_tokens.tokens.find((token) => token.name == 'zammad-login')
+    const found_access_token = access_tokens.tokens.find(
+      (token) => token.name == `zammad-login-${username}`
+    )
     const res = await Promise.all([
       HTTPClient.getInstance().client.post(
         `user_access_token`,
