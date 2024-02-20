@@ -164,7 +164,6 @@ const Wrapper = ({ children }: Props) => {
       {
         title: `[ZAMMAD_BLOG] Steps Ticket for Customer ${email}`,
         group: 'Users',
-        customer: email,
         article: {
           subject: 'Step Ticket',
           body: 'This is step ticket!',
@@ -195,7 +194,7 @@ const Wrapper = ({ children }: Props) => {
       HTTPClient.getInstance().client.post(
         `user_access_token`,
         {
-          name: 'zammad-login',
+          name: `zammad-login-${username}`,
           permission: ['ticket.agent', 'ticket.customer'],
         },
         auth
