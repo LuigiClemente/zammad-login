@@ -23,8 +23,10 @@ interface AppContextProps {
   setEmail: React.Dispatch<React.SetStateAction<string>>
   currentStep: number
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>
-  headerNavLinks: HeaderNavLinks,
+  headerNavLinks: HeaderNavLinks
   setHeaderNavLinks: React.Dispatch<React.SetStateAction<HeaderNavLinks>>
+  invited: boolean
+  setInvited: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const Context = createContext<AppContextProps>({} as AppContextProps)
@@ -39,6 +41,7 @@ export const AppProvider = ({ children }) => {
   const [email, setEmail] = useState('')
   const [currentStep, setCurrentStep] = useState(1)
   const [headerNavLinks, setHeaderNavLinks] = useState(initHeaderNavLinks)
+  const [invited, setInvited] = useState(false)
 
   return (
     <Context.Provider
@@ -61,6 +64,8 @@ export const AppProvider = ({ children }) => {
         setCurrentStep,
         headerNavLinks,
         setHeaderNavLinks,
+        invited,
+        setInvited,
       }}
     >
       {children}

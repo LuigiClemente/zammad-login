@@ -4,12 +4,16 @@
 'use client'
 import { CUBE_URL } from 'config-apps'
 import { useTheme } from 'next-themes'
+import { useAppProvider } from 'provider/AppProvider'
 import React, { useEffect, useRef, useState } from 'react'
 
 const CubeComponent = () => {
   const frameRef = useRef(null)
   const size = useWindowSize()
   const { theme, setTheme, resolvedTheme } = useTheme()
+  const {
+    invited,
+  } = useAppProvider()
 
   const [, setHeight] = React.useState('0px')
   const onLoad = () => {
@@ -30,7 +34,7 @@ const CubeComponent = () => {
     <div className="relative flex h-full w-full items-center justify-center">
       <iframe
         id="da-iframe"
-        src={CUBE_URL}
+        src={CUBE_URL + (!invited ? "/products/family" : "/customer/sign-in")}
         title="this is cube chart"
         scrolling="yes"
         frameBorder={0}

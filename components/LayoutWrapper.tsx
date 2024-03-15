@@ -50,6 +50,7 @@ const Wrapper = ({ children }: Props) => {
     setEmail,
     setCurrentStep,
     setHeaderNavLinks,
+    setInvited,
   } = appProviderContext
 
   const checkRoute = () => {
@@ -88,8 +89,11 @@ const Wrapper = ({ children }: Props) => {
       } else {
         setHeaderNavLinks(initHeaderNavLinks)
       }
+      if (userRoles.includes('invited')) {
+        setInvited(true)
+      }
     })()
-  }, [setAuthToken, setEmail, setHeaderNavLinks])
+  }, [setAuthToken, setEmail, setHeaderNavLinks, setInvited])
 
   const showStepper = useCallback(() => {
     setShowSplash(true)
