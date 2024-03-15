@@ -12,6 +12,7 @@ const CubeComponent = () => {
   const size = useWindowSize()
   const { theme, setTheme, resolvedTheme } = useTheme()
   const {
+    email,
     invited,
   } = useAppProvider()
 
@@ -34,7 +35,7 @@ const CubeComponent = () => {
     <div className="relative flex h-full w-full items-center justify-center">
       <iframe
         id="da-iframe"
-        src={CUBE_URL + (!invited ? "/products/family" : "/customer/sign-in")}
+        src={CUBE_URL + (!invited ? "/products/family" : "/customer/sign-in?email=" + email)}
         title="this is cube chart"
         scrolling="yes"
         frameBorder={0}
