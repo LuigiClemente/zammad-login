@@ -9,10 +9,10 @@ export const StepThree = ({ stepRefs, router, checkerRoute, stepperData }) => {
             tabIndex={0}
             ref={stepRefs[2]}
             onKeyDown={() => {
-              router.push('/cube')
+              router.push('/plan')
             }}
             onClick={() => {
-              router.push('/cube')
+              router.push('/plan')
             }}
           >
             <div className="color3 color color3 text-3xl font-black">{`${stepperData[2].step}`}</div>

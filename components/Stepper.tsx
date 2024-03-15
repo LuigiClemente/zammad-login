@@ -110,7 +110,7 @@ const Stepper = ({ checkerRoute }) => {
             <div
               className="mr-4 flex w-32 flex-col items-center justify-center rounded border border-gray-300 py-5 uppercase"
               onClick={() => {
-                router.push('/cube')
+                router.push('/plan')
               }}
             >
               <div className="color3 text-3xl font-black ">{`${stepperData[2].step}`}</div>
