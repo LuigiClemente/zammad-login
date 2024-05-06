@@ -23,7 +23,7 @@ import siteMetadata from './data/siteMetadata'
 import { allCoreContent, sortPosts } from 'pliny/utils/contentlayer.js'
 import { spawn } from 'node:child_process'
 // import { makeSource } from 'contentlayer/source-remote-files'
-import { makeSource } from 'contentlayer/source-files'
+import { makeSource } from 'contentlayer/source-remote-files'
 import { HTTPClient } from './lib/axios'
 
 const root = process.cwd()
@@ -143,9 +143,63 @@ export const Tickets = defineDocumentType(() => ({
   computedFields,
 }))
 
+const syncContentFromGit = async (contentDir: string) => {
+  const syncRun = async () => {
+    const gitUrl = 'https://github.com/bngo58478/blog.git'
+    await runBashCommand(`
+      if [ -d  "${contentDir}/blog" ];
+        then
+          cd "${contentDir}/blog"; git pull;
+        else
+          git clone --depth 1 --single-branch ${gitUrl} ${contentDir}/blog;
+      fi
+    `)
+  }
+
+  let wasCancelled = false
+  let syncInterval
+
+  const syncLoop = async () => {
+    console.log('Syncing content files from git ' + contentDir)
+
+    await syncRun()
+
+    if (wasCancelled) return
+
+    syncInterval = setTimeout(syncLoop, 1000 * 60)
+  }
+
+  // Block until the first sync is done
+  await syncLoop()
+
+  return () => {
+    wasCancelled = true
+    clearTimeout(syncInterval)
+  }
+}
+
+const runBashCommand = (command: string) =>
+  new Promise((resolve, reject) => {
+    const child = spawn(command, [], { shell: true })
+
+    child.stdout.setEncoding('utf8')
+    child.stdout.on('data', (data) => process.stdout.write(data))
+
+    child.stderr.setEncoding('utf8')
+    child.stderr.on('data', (data) => process.stderr.write(data))
+
+    child.on('close', function (code) {
+      if (code === 0) {
+        resolve(void 0)
+      } else {
+        reject(new Error(`Command failed with exit code ${code}`))
+      }
+    })
+  })
+
 export default makeSource({
   contentDirPath: 'data',
-  // syncFiles: syncContent,
+  syncFiles: syncContentFromGit,
   documentTypes: [Blog, Authors, Tickets],
   mdx: {
     cwd: process.cwd(),
