@@ -1,0 +1,29 @@
+{
+    "Index": {
+      "Home": "Home",
+      "About_Us": "About Us",
+      "Our_Studies": "Our Studies",
+      "Terms_of_Service": "Terms of Service",
+      "Cookies_Policy": "Cookies Policy",
+      "Privacy_Policy": "Privacy Policy"
+  ,
+      "welcome": "Welcome",
+      "welcomeBack": "Welcome Back",
+      "forgotPassword": "Forgot Password",
+      "forgetPasswordPage": {
+          "title": "Forget Password",
+          "emailAddress": "Email Address: name@company.com",
+          "sendResetEmail": "Send reset email",
+          "backToSignIn": "Back to sign in"
+      },
+      "welcomeOrWelcomeBackPage": {
+          "welcomeBack": "Welcome Back",
+          "yourEmail": "Your email",
+          "emailPlaceholder": "name@company.com",
+          "password": "Password",
+          "passwordPlaceholder": "Enter your password",
+          "forgotPassword": "Forgot password?",
+          "signIn": "Sign in"
+      }
+         }
+  }

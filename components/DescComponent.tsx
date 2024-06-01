@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useToggle } from 'usehooks-ts'
-import { LOGIN_SCHEMA } from '../app/yup/Validation'
+import { LOGIN_SCHEMA } from '../app/[locale]/yup/Validation'
 import Input from './Input'
 
 const DescComponent = ({ title, description }) => {

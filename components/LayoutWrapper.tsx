@@ -251,7 +251,7 @@ const Wrapper = ({ children }: Props) => {
       return <ResetForm loginCheck={restFormFunc} />
     } else {
       return (
-        <div className="mt-30 container h-full pt-20">
+        <div className="">
           <PageLogin loginCheck={loginCheck} forgetPassHandler={forgetPassHandler} />
           {/* <Stepper checkerRoute={checkRoute} /> */}
         </div>
@@ -276,7 +276,7 @@ const Wrapper = ({ children }: Props) => {
           <Stepper checkerRoute={checkRoute} />
         </>
       ) : (
-        <div className="flex h-screen flex-col justify-between ">
+        <div className="">
           <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>
             <Header />
             <main className="mb-auto">{children}</main>

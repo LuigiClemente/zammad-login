@@ -1,146 +1,144 @@
-'use client'
-import Spinner from '@/components/Spinner'
-import siteMetadata from '@/data/siteMetadata'
-import Link from 'next/link'
-import { UserButton } from '@clerk/nextjs'
-// import { useRouter } from 'next/router'
-import siteInfo from '@/data/siteInfo'
-import { useRouter } from 'next/navigation'
+// PageLogin.js
 
-import { yupResolver } from '@hookform/resolvers/yup'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { useToggle } from 'usehooks-ts'
-import { LOGIN_SCHEMA } from '../app/yup/Validation'
-import Input from './Input'
-import DescComponent from './DescComponent'
-import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { ReactNode, useEffect, useState } from 'react';
+import { Navigation } from './Navigation';
+import { useTranslations } from 'next-intl';
+
+const loginSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(4, 'Password must be at least 4 characters long'),
+});
+
+let codeRun = false;
 
 const PageLogin = ({ loginCheck, forgetPassHandler }) => {
-  const router = useRouter()
+  const [langBtnState , setLangBtnState]=  useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [navOpen , setNavOpen] =  useState<boolean>(false);
+  const [isLangBtnHovered , setIsLangBtnHovered] = useState(false);
+
+
+  const [langOpen , setLangOpen] =  useState<boolean>(false);
   const {
     register,
     handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(loginSchema),
+  });
+  const [welcomeBack, setWelcomeBack] = useState(false);
 
-    formState: { errors, isSubmitting, isSubmitSuccessful, isValid, isDirty },
-  } = useForm<LoginUser>({
-    resolver: yupResolver(LOGIN_SCHEMA),
-  })
 
-  const [loading, toggleLoading] = useToggle()
+  useEffect(() => {
 
-  const onSubmit: SubmitHandler<LoginUser> = async (values) => {
-    console.log('form value is value', values)
-    loginCheck(values.email, values.password)
+    if(!codeRun){ 
+codeRun = true ;
+    console.log('Code run Code run')
+    if (typeof window !== "undefined") {
+
+      const isReturningUser = window.localStorage.getItem('hasVisitedBefore2');
+      console.log({isReturningUser})
+      setWelcomeBack(!!isReturningUser); // Cast the string to a boolean
+      if (!isReturningUser) {
+        window.localStorage.setItem('hasVisitedBefore2', 'true');
+      }
+    }
   }
 
-  useEffect(() => {})
+  }, []);
 
-  // const onSubmit = ({ data }) => {
-  //   console.log('Data is >>', data)
-  // }
+const t =  useTranslations('Index');
+  const onSubmit = (data) => {
+    // Handle your login logic here
+    console.log('Form submitted:', data);
+    loginCheck(data.email , data.password);
+  };
+
   return (
-    <section className="pt-10">
-      <Spinner />
-      <div className="mt-30 container h-full pt-20">
-        <div className="g-6 flex h-full flex-wrap items-center justify-center text-neutral-800 dark:text-neutral-200">
-          <div className="w-full">
-            <div className="block rounded-lg bg-darkGreen shadow-lg dark:bg-blackDark">
-              <div className="g-0 lg:flex lg:flex-wrap">
-                {/* <!-- Left column container--> */}
-                <div className="px-4 md:px-0 lg:w-6/12">
-                  <div className="md:mx-6 md:p-12">
-                    {/* <!--Logo--> */}
-                    <div className="mb-10 flex w-full flex-wrap items-center justify-center">
-                      <div>
-                        <Link href="/" aria-label={siteMetadata.headerTitle}>
-                          <div className="flex items-center justify-between text-xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white md:text-3xl">
-                            {typeof siteMetadata.headerTitle === 'string' ? (
-                              <div className="hidden h-6 w-full text-xl font-bold leading-tight tracking-tight text-titleColorLM dark:text-neutral-100 sm:block md:text-3xl">
-                                {siteMetadata.headerTitle}
-                              </div>
-                            ) : (
-                              <div className="hidden h-6 w-full text-3xl font-bold leading-tight tracking-tight text-titleColorLM dark:text-neutral-100 sm:block md:text-3xl">
-                                {siteMetadata.headerTitle}
-                              </div>
-                            )}
-                          </div>
-                        </Link>
-                      </div>
-                    </div>
-
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                      <p className="mb-4 text-subTitleLM dark:text-neutral-200">{`${siteInfo.loginTitle}`}</p>
-                      {/* <!--Username input--> */}
-                      <Input
-                        type={'text'}
-                        label={'Email'}
-                        name={'email'}
-                        register={register}
-                        error={errors.email}
-                        css="w-full"
-                      />
-
-                      {/* <!--Password input--> */}
-                      <Input
-                        type={'password'}
-                        label={'Password'}
-                        name={'password'}
-                        register={register}
-                        error={errors.password}
-                        css="w-full"
-                      />
-
-                      {/* <!--Submit button--> */}
-                      <div className="mb-12 pb-1 pt-1 text-center">
-                        <div className="w-full">
-                          <button
-                            className="mb-3 inline-block w-full rounded px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-txtWhite "
-                            style={{
-                              background:
-                                'linear-gradient(to right, #235475, #56a4d9, #3e95d0, #1495ea)',
-                            }}
-                            type="submit"
-                          >
-                            Log in
-                          </button>
-                          <UserButton afterSignOutUrl="/" />
-                        </div>
-
-                        {/* <!--Forgot password link--> */}
-                        <Link
-                          className="text-subTitleLM dark:text-neutral-200"
-                          href="#!"
-                          onClick={forgetPassHandler}
-                        >
-                          Forgot password?
-                        </Link>
-                      </div>
-
-                      {/* <!--Register button--> */}
-                      <div className="flex items-center justify-between pb-6">
-                        <p className="mb-0 mr-2 text-txt dark:text-neutral-200">{`${siteInfo.notAccount}`}</p>
-                        <div>
-                          <button
-                            type="button"
-                            className="border-danger text-danger hover:border-danger-600 hover:text-danger-600 focus:border-danger-600 focus:text-danger-600 active:border-danger-700 active:text-danger-700 inline-block rounded border-2 px-6 pb-[6px] pt-2 text-xs font-medium uppercase leading-normal text-txt transition duration-150 ease-in-out hover:bg-neutral-500 hover:bg-opacity-10 focus:outline-none focus:ring-0 dark:text-neutral-200 dark:hover:bg-neutral-100 dark:hover:bg-opacity-10"
-                          >
-                            Register
-                          </button>
-                          <UserButton afterSignOutUrl="/" />
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-
-                {/* <!-- Right column container with background and description--> */}
-                <DescComponent title={siteInfo.title} description={siteInfo.description} />
+    <section>
+      <div className='custom-container'>
+      <Navigation navOpen={navOpen} langOpen={langOpen} setLangOpen={setLangOpen} setNavOpen={setNavOpen} isHovered={isHovered} setIsHovered={setIsHovered} isLangBtnHovered={isLangBtnHovered} setIsLangBtnHovered={setIsLangBtnHovered} />
+        </div>
+      <div className="flex flex-col items-center justify-center px-6 mt-[50px] mx-auto  lg:py-0 cera-pro-font ">
+        <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+          <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+            {welcomeBack ? t('welcomeBack') : t('welcome')}
+            </h1>
+            <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit(onSubmit)}>
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block mb-2 text-sm font-light text-gray-900 dark:text-white"
+                >
+                  {t('welcomeOrWelcomeBackPage.yourEmail')}
+                </label>
+                <input
+                  {...register('email')}
+                  type="email"
+                  id="email"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-black focus:border-black block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-black dark:focus:border-black text-black placeholder:text-gray-500"
+                  placeholder={t('welcomeOrWelcomeBackPage.emailPlaceholder')}
+                />
+                {errors.email && (
+                  <p className="mt-2 text-sm text-red-600">{errors.email.message as ReactNode}</p>
+                )}
               </div>
-            </div>
+
+              <div>
+                <label
+                  htmlFor="password"
+                  className="block mb-2 text-sm font-light text-gray-900 dark:text-white"
+                >
+                  {t('welcomeOrWelcomeBackPage.password')}
+                </label>
+                <input
+                  {...register('password')}
+                  type="password"
+                  id="password"
+                  placeholder={t('welcomeOrWelcomeBackPage.passwordPlaceholder')}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-black focus:border-black block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-black dark:focus:border-black text-black placeholder:text-gray-500"
+                />
+                {errors.password && (
+                  <p className="mt-2 text-sm text-red-600">{errors.password.message as ReactNode}</p>
+                )}
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div></div>
+                <a
+                  href="#"
+                onClick={()=>{forgetPassHandler()}}
+                className="text-gray-700 hover:underline text-sm font-medium"
+                >
+                    {t('forgotPassword')}
+                </a>
+              </div>
+
+              <button
+                type="submit"
+                className="btn-primary bg-[#2ae8d3] w-full "
+              >
+                {t('welcomeOrWelcomeBackPage.signIn')}
+              </button>
+              {/* <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+                Don’t have an account yet?{' '}
+                <a
+                  href="#"
+                  className="font-medium text-black hover:underline dark:text-black"
+                >
+                  Sign up
+                </a>
+              </p> */}
+            </form>
           </div>
         </div>
       </div>
     </section>
-  )
-}
-export default PageLogin
+  );
+};
+
+export default PageLogin;
