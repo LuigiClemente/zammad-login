@@ -5,7 +5,5 @@ interface Props {
 }
 
 export default function SectionContainer({ children }: Props) {
-  return (
-    <section >{children}</section>
-  )
+  return <section>{children}</section>
 }

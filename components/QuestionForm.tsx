@@ -1,6 +1,6 @@
 import { QUESTION_DATA } from '@/data/questionData'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { REGISTER_SCHEMA } from '../app/[locale]/yup/Validation';
+import { REGISTER_SCHEMA } from '../app/[locale]/yup/Validation'
 import { useEffect, useRef, useState } from 'react'
 import { Resolver, SubmitHandler, useForm } from 'react-hook-form'
 import ModalSubmit from './ModalSubmit'

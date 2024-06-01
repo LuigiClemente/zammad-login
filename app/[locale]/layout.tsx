@@ -60,8 +60,14 @@ const space_grotesk = Space_Grotesk({
 //   },
 // }
 
-export default function RootLayout({ children ,  params: {locale} }: { children: React.ReactNode , params:{locale:string} }) {
-  const messages = useMessages();
+export default function RootLayout({
+  children,
+  params: { locale },
+}: {
+  children: React.ReactNode
+  params: { locale: string }
+}) {
+  const messages = useMessages()
   return (
     <html
       lang={siteMetadata.language}
@@ -79,21 +85,18 @@ export default function RootLayout({ children ,  params: {locale} }: { children:
       <link rel="alternate" type="application/rss+xml" href="/feed.xml" />
       <body className="bg-lightGreen text-black antialiased dark:bg-lightBlack dark:text-white">
         <ThemeProviders>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          
-          <ClerkProvider>
-            <AppProvider>
-              <StateProvider>
-                <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
-                <SectionContainer>
-                  <LayoutWrapper>{children}</LayoutWrapper>
-                </SectionContainer>
-              </StateProvider>
-            </AppProvider>
-          </ClerkProvider>
-   
-          
-        </NextIntlClientProvider>
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            <ClerkProvider>
+              <AppProvider>
+                <StateProvider>
+                  <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
+                  <SectionContainer>
+                    <LayoutWrapper>{children}</LayoutWrapper>
+                  </SectionContainer>
+                </StateProvider>
+              </AppProvider>
+            </ClerkProvider>
+          </NextIntlClientProvider>
         </ThemeProviders>
       </body>
     </html>
