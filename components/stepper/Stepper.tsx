@@ -47,8 +47,8 @@ const Stepper = ({ checkerRoute  , openStepModal , setOpenStepModal}) => {
   oranges.push(currentStep + 1)
 
   return (
-    <Modal open={openStepModal} onClose={()=>{ setOpenStepModal(false)}} center >
-    <section className="mx-auto max-w-5xl stepper">
+    
+    <section className="mx-auto  w-full max-w-screen-xl items-center justify-between gap-x-4 px-4 md:justify-normal md:px-8 py-3 mb-10 stepper">
       <style>
         {`
       .step-border {
@@ -129,7 +129,7 @@ const Stepper = ({ checkerRoute  , openStepModal , setOpenStepModal}) => {
       </div>
      
     </section>
-    </Modal>
+   
   )
 }
 

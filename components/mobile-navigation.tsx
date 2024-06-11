@@ -9,9 +9,10 @@ import { Sheet, SheetContent } from './ui/sheet';
 export type MobileNavigationProps = {
   isMenuOpen: boolean;
   onMenuOpenChange?: (_value: boolean) => void;
+  noLocalModal:boolean;
 };
 
-export const MobileNavigation = ({ isMenuOpen, onMenuOpenChange }: MobileNavigationProps) => {
+export const MobileNavigation = ({ isMenuOpen, onMenuOpenChange , noLocalModal }: MobileNavigationProps) => {
   const params = useParams();
 
   const handleMenuItemClick = () => {
@@ -37,16 +38,18 @@ export const MobileNavigation = ({ isMenuOpen, onMenuOpenChange }: MobileNavigat
       href: '/settings/profile',
       text: 'Contact Us',
     },
-    {
-      href: '/settings/teams',
-      text: 'User Settings',
-    },
-    {
-      href: '/settings/profile',
-      text: 'Admin Panel',
-    },
+    ...(!noLocalModal ? [
+      {
+        href: '/settings/teams',
+        text: 'User Settings',
+      },
+      {
+        href: '/settings/profile',
+        text: 'Admin Panel',
+      }
+    ] : [])
   ];
-
+  
   return (
     <Sheet open={isMenuOpen} onOpenChange={onMenuOpenChange} >
       <SheetContent className="flex w-full max-w-[350px] flex-col">

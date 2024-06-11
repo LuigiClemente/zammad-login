@@ -258,7 +258,7 @@ const Wrapper = ({ children }: Props) => {
     } else {
       return (
         <div className="">
-            {/* <QuestionModal checkerRoute={checkRouteQuestion} setQuestionModalOpen={setQuestionModalOpen} questionModalOpen={questionModalOpen}></QuestionModal> */}
+            
 
           <PageLogin loginCheck={loginCheck} forgetPassHandler={forgetPassHandler} />
           
@@ -270,13 +270,17 @@ const Wrapper = ({ children }: Props) => {
   // Handle the case when login is true here, if needed
   // return some component or null based on your requirement
 
-  // if (login && !hasTicket) {
-  //   return (
-  //     <div className=" w-full">
+  if (login && !hasTicket) {
+    return (
+      <>
       
-  //     </div>
-  //   )
-  // }
+      <GlobalHeader  noLocalModal={true}/>
+                <OtherHeader noLocalModal={true} />
+            
+        <QuestionModal checkerRoute={checkRouteQuestion} setQuestionModalOpen={setQuestionModalOpen} questionModalOpen={questionModalOpen}></QuestionModal>
+      </>
+    )
+  }
 
 
 
@@ -286,19 +290,24 @@ const Wrapper = ({ children }: Props) => {
         <div>
           {showSplash ? (
             <>
+              <GlobalHeader  noLocalModal={true}/>
+              <OtherHeader noLocalModal={true} />
               <Stepper checkerRoute={checkRoute} setOpenStepModal={setOpenStepModal} openStepModal={openStepModal} />
             </>
           ) : (
             <div className="">
-            {/* <Stepper checkerRoute={checkRoute} setOpenStepModal={setOpenStepModal} openStepModal={openStepModal} /> */}
               <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>
               
-                <GlobalHeader />
-                <OtherHeader noLocalModal={true} />
-            <QuestionModal checkerRoute={checkRouteQuestion} setQuestionModalOpen={setQuestionModalOpen} questionModalOpen={questionModalOpen}></QuestionModal>
-                {/* <main className="mx-auto  w-full max-w-screen-xl items-center justify-between gap-x-4 px-4 md:justify-normal md:px-8 py-3 ">{children}</main> */}
+               <GlobalHeader  />
+                <OtherHeader />
+            
+
+          
+          
+                <main className="mx-auto  w-full max-w-screen-xl items-center justify-between gap-x-4 px-4 md:justify-normal md:px-8 py-3 ">{children}</main> 
+                
               </SearchProvider>
-              <Footer />
+             <Footer /> 
             </div>
           )}
         </div>

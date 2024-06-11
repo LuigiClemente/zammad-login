@@ -13,7 +13,7 @@ import { usePathname } from 'next/navigation'
 import React from 'react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
 
-export const GlobalHeader = () => {
+export const GlobalHeader = ({noLocalModal=false}:{noLocalModal?:boolean}) => {
 
 
     const formatAvatarFallback = (teamName?: string) => {
@@ -173,7 +173,7 @@ export const GlobalHeader = () => {
         <DropdownMenuSeparator />
 
 <div className='block md:hidden'>
-  {
+  { 
     menuNavigationLinks.map(({ href, text }) => {
       return (
 
@@ -187,9 +187,9 @@ export const GlobalHeader = () => {
 
       <div className="hidden md:block">
       
-        <DropdownMenuItem className="text-muted-foreground px-4 py-2" asChild>
+     {!noLocalModal &&   <DropdownMenuItem className="text-muted-foreground px-4 py-2" asChild>
           <Link href="/settings/profile">User settings</Link>
-        </DropdownMenuItem>
+        </DropdownMenuItem>}
 
        
         </div>

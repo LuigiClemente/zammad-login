@@ -1,161 +1,117 @@
-import { QUESTION_DATA } from '@/data/questionData'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { REGISTER_SCHEMA } from '../app/[locale]/yup/Validation'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { Resolver, SubmitHandler, useForm } from 'react-hook-form'
-import ModalSubmit from './ModalSubmit'
-import Question from './Question'
-import SplashHeader from './SplashHeader'
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Modal } from 'react-responsive-modal';
-
+import { QUESTION_DATA } from '@/data/questionData';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { REGISTER_SCHEMA } from '../app/[locale]/yup/Validation';
+import { useEffect, useMemo, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import ModalSubmit from './ModalSubmit';
+import Question from './Question';
+import useLocalStorage from 'use-local-storage';
 import 'react-responsive-modal/styles.css';
-import { GlobalHeader } from './global-header'
-import { OtherHeader } from './other-header'
+import { GlobalHeader } from './global-header';
+import { OtherHeader } from './other-header';
 
+const QuestionModal = ({ checkerRoute, setQuestionModalOpen, questionModalOpen }) => {
+  const [currentQuestion, setCurrentQuestion] = useLocalStorage('currentQuestion', 0);
+  const [answers, setAnswers] = useLocalStorage('answers', {});
+  const [isLastStep, setIsLastStep] = useState(false);
+  const [isFirstStep, setIsFirstStep] = useState(false);
+  const [isFemale, setIsFemale] = useState(false);
+  const [haveWeightGoal, setHaveWeightGoal] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [stepValueChecker, setStepValueChecker] = useState(null);
 
+  const questionsList = useMemo(() => {
+    return QUESTION_DATA.filter(question => 
+      !((!isFemale && question.gender === 'female') || (question.name === 'weightGoal' && !haveWeightGoal))
+    );
+  }, [isFemale, haveWeightGoal]);
 
+  const numOfQuestion = questionsList.length;
 
-const QuestionModal = ({checkerRoute , setQuestionModalOpen , questionModalOpen  }) => {
-
-  const [currentQuestion, setCurrentQuestion] = useState(0)
-  const [stepValueChecker, setStepValueChecker] = useState(null)
-  const [isLastStep, setIsLastStep] = useState(false)
-  const [isFirstStep, setIsFirstStep] = useState(false)
-  const [isFemale, setIsFemale] = useState(false)
-  const [haveWeightGoal, setHaveWeightGoal] = useState(false)
-  const [isError, setIsError] = useState(false)
-  const questionsList = QUESTION_DATA.filter(
-    (question) =>
-      !(
-        (!isFemale && question.gender === 'female') ||
-        (question?.name === 'weightGoal' && !haveWeightGoal)
-      )
-  )
-  const numOfQuestion = questionsList.length
-  const initialArray = Array.from({ length: numOfQuestion }, (_, index) => index === 0)
-  const [stepCompleted, setStepCompleted] = useState(initialArray)
+  const { register, handleSubmit, formState: { errors }, getValues, reset, setValue } = useForm({
+    resolver: yupResolver(REGISTER_SCHEMA),
+  });
 
   const handleNext = () => {
-    const formValues = getValues()
+    const formValues = getValues();
     if (!formValues[questionsList[currentQuestion].name]) {
-      setIsError(true)
-      return
+      setIsError(true);
+      return;
     }
-    setIsError(false)
-    setCurrentQuestion((cur) => (cur < questionsList.length - 1 ? cur + 1 : cur))
-    setStepValueChecker(null)
-    setStepCompleted((prevArray) => {
-      const newArray = [...prevArray]
-      newArray[currentQuestion] = true
-      return newArray
-    })
+    setIsError(false);
 
-    setIsLastStep(currentQuestion === questionsList.length - 2)
-  }
+    setAnswers(prevAnswers => ({
+      ...prevAnswers,
+      [questionsList[currentQuestion].name]: formValues[questionsList[currentQuestion].name],
+    }));
 
-  const handleStepper = (index) => {
-    setStepValueChecker(null)
-    setCurrentQuestion(index)
-    setIsLastStep(currentQuestion === questionsList.length - 1)
-  }
+    setCurrentQuestion((current:any) => {
+      const nextQuestion = current + 1;
+      setIsLastStep(nextQuestion === questionsList.length);
+      return Math.min(questionsList.length - 1, nextQuestion);
+    });
+  };
 
   const handlePrev = () => {
-    const formValues = getValues()
-    setCurrentQuestion((cur) => Math.max(0, cur - 1))
-    const newArray = [...stepCompleted]
-    newArray[currentQuestion] = true
-    setStepCompleted(newArray)
-    setIsError(false)
-    setIsFirstStep(currentQuestion === 0)
-    setIsLastStep(false)
-  }
+    setCurrentQuestion((current:any) => {
+      const newCurrent = Math.max(0, current - 1);
+      setIsFirstStep(newCurrent === 0);
+      setIsLastStep(false);
+      return newCurrent;
+    });
+  };
 
   const handleOptionClick = (option, name) => {
-    setStepValueChecker(option)
-    if (option === 'Female') {
-      setIsFemale(true)
-    } else if (option === 'Male') {
-      setIsFemale(false)
+    setStepValueChecker(option);
+    if (name === 'gender') {
+      setIsFemale(option === 'Female');
     }
     if (name === 'haveWeightGoal') {
-      setHaveWeightGoal(option === 'Yes')
-      console.log('setHaveWeightGoal ::: >>>', haveWeightGoal)
+      setHaveWeightGoal(option === 'Yes');
     }
+  };
+  const handleStepper = (index) => {
+    setStepValueChecker(null);
+    setCurrentQuestion(index);
+    setIsLastStep(index === questionsList.length - 1);
+  };
 
-    console.log('Value checker is >>>', option, isFemale)
-  }
-
-  const [modalVisible, setModalVisible] = useState(false)
+  const [modalVisible, setModalVisible] = useState(false);
 
   const toggleModal = () => {
-    setModalVisible(!modalVisible)
-    setIsLastStep(true)
-  }
-  const questionsListRef = useRef(questionsList)
+    setModalVisible(!modalVisible);
+  };
 
   useEffect(() => {
-    // Initialize questionsList inside the useEffect to reflect the latest state
-    const filteredQuestions = QUESTION_DATA.filter(
-      (question) =>
-        !(
-          (!isFemale && question.gender === 'female') ||
-          (question?.name === 'weightGoal' && !haveWeightGoal)
-        )
-    )
-
-    if (!isFemale || haveWeightGoal) {
-      questionsListRef.current = filteredQuestions
-      console.log('Question Data filter ::: >>', questionsListRef.current, isFemale)
-    } else {
-      questionsListRef.current = filteredQuestions.filter(
-        (question) => !(question.name === 'weightGoal' && haveWeightGoal)
-      )
-      console.log('Question Data filter ::: >>', questionsListRef.current, isFemale)
-    }
-  }, [isFemale, haveWeightGoal])
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitSuccessful },
-    getValues,
-    reset,
-  } = useForm<RegisterQuestion>({
-    resolver: yupResolver(REGISTER_SCHEMA) as Resolver<RegisterQuestion>,
-  })
-
-  const onSubmit: SubmitHandler<RegisterQuestion> = async (values) => {
-    console.log('Submitting form with values:', values)
-    setModalVisible(true)
-    return Promise.resolve()
-  }
+    Object.keys(answers).forEach((name:any) => {
+      setValue(name, answers[name]);
+    });
+  }, [setValue, answers]);
 
   useEffect(() => {
-    if (isSubmitSuccessful) {
-      reset()
+    const filteredQuestions = QUESTION_DATA.filter(question => 
+      !((!isFemale && question.gender === 'female') || (question.name === 'weightGoal' && !haveWeightGoal))
+    );
+    if (currentQuestion >= filteredQuestions.length) {
+      setCurrentQuestion(filteredQuestions.length - 1);
     }
-  }, [isSubmitSuccessful, reset])
+  }, [isFemale, haveWeightGoal, currentQuestion]);
+
+  const onSubmit = async (values) => {
+    console.log('Submitting form with values:', values);
+    setCurrentQuestion(0);
+    setAnswers({});
+    setQuestionModalOpen(false);
+    setModalVisible(true);
+    return Promise.resolve();
+  };
 
   return (
-   
-   <>
-   
-   
+    <>
       <form
-        className="flex w-full max-w-xl flex-col justify-between rounded bg-darkGreen   dark:bg-blackDark questions mx-auto"
+        className="flex w-full max-w-xl flex-col justify-between rounded bg-darkGreen dark:bg-blackDark questions mx-auto"
         onSubmit={handleSubmit(onSubmit)}
       >
-        
         <Question
           question={questionsList[currentQuestion].question}
           options={questionsList[currentQuestion].options}
@@ -163,8 +119,10 @@ const QuestionModal = ({checkerRoute , setQuestionModalOpen , questionModalOpen 
           image={questionsList[currentQuestion].image}
           register={register}
           error={errors}
-          name={questionsList[currentQuestion].name}
+          
+          
           stepValueChecker={stepValueChecker}
+          name={questionsList[currentQuestion].name}
           handleOptionClick={handleOptionClick}
           isError={isError}
           currentQuestion={currentQuestion}
@@ -173,41 +131,34 @@ const QuestionModal = ({checkerRoute , setQuestionModalOpen , questionModalOpen 
           numOfQuestion={numOfQuestion}
         />
 
-        
         <div className='p-3'>
-        {!isLastStep && (
-          <button
-            onClick={handleNext}
-            className="btn-primary w-full bg-[#2ae8d3] "
-         
-          >
-            Continue
-          </button>
-        )}
-        {isLastStep && (
-          <button
-            type="submit"
-           className="btn-primary w-full bg-[#2ae8d3] "
-           
-          >
-            Submit
-          </button>
-        )}
+          {!isLastStep ? (
+            <button
+              type="button"
+              onClick={handleNext}
+              className="btn-primary w-full bg-[#2ae8d3]"
+            >
+              Continue
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="btn-primary w-full bg-[#2ae8d3]"
+            >
+              Submit
+            </button>
+          )}
         </div>
       </form>
-      {isLastStep && (
+      {modalVisible && (
         <ModalSubmit
           modalVisible={modalVisible}
           toggleModal={toggleModal}
           handleSave={checkerRoute}
         />
       )}
+    </>
+  );
+};
 
-
-   
-   </>
-   
-  )
-}
-
-export default QuestionModal
+export default QuestionModal;

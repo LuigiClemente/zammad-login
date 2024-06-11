@@ -39,10 +39,8 @@ const ModalSubmit = ({ modalVisible, toggleModal, handleSave }) => {
               <p className="p-4 text-txt dark:text-neutral-200">Are Sure you want to Submit?</p>
 
               <button
-                className="mb-3 inline-block w-full rounded px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-txtWhite "
-                style={{
-                  background: 'linear-gradient(to right, #235475, #56a4d9, #3e95d0, #1495ea)',
-                }}
+                 className="btn-primary w-full bg-[#2ae8d3]"
+               
                 type="submit"
                 onClick={() => {
                   handleSave()
