@@ -1,10 +1,8 @@
 'use client'
 import siteMetadata from '@/data/siteMetadata'
 import { Inter } from 'next/font/google'
-import { ReactNode, useCallback, useEffect } from 'react'
+import { ReactNode, useCallback, useEffect, useState } from 'react'
 import Footer from './Footer'
-import Header from './Header'
-
 import PageLogin from '@/components/PageLogin'
 import { SearchConfig, SearchProvider } from 'pliny/search'
 import { useAppProvider } from 'provider/AppProvider'
@@ -16,6 +14,11 @@ import Stepper from './stepper/Stepper'
 import { HTTPClient } from '@/lib/axios'
 import Cookies from 'js-cookie'
 import initHeaderNavLinks, { cubeheaderNavLinks } from '@/data/headerNavLinks'
+import { GlobalHeader } from './global-header'
+import { OtherHeader } from './other-header'
+import { ModalProvider } from 'react-simple-modal-provider'
+import QuestionModal from './QuestionForm'
+// import { OtherHeader } from './header'
 
 interface Props {
   children: ReactNode
@@ -32,6 +35,9 @@ type Ticket = {
 
 const Wrapper = ({ children }: Props) => {
   const appProviderContext = useAppProvider()
+  const [questionModalOpen, setQuestionModalOpen] = useState<boolean>(true);
+  const [openStepModal, setOpenStepModal] = useState<boolean>(true);
+
 
   const {
     login,
@@ -252,8 +258,10 @@ const Wrapper = ({ children }: Props) => {
     } else {
       return (
         <div className="">
+            {/* <QuestionModal checkerRoute={checkRouteQuestion} setQuestionModalOpen={setQuestionModalOpen} questionModalOpen={questionModalOpen}></QuestionModal> */}
+
           <PageLogin loginCheck={loginCheck} forgetPassHandler={forgetPassHandler} />
-          {/* <Stepper checkerRoute={checkRoute} /> */}
+          
         </div>
       )
     }
@@ -262,30 +270,40 @@ const Wrapper = ({ children }: Props) => {
   // Handle the case when login is true here, if needed
   // return some component or null based on your requirement
 
-  if (login && !hasTicket) {
-    return (
-      <div className=" w-full">
-        <QuestionForm checkerRoute={checkRouteQuestion} />
-      </div>
-    )
-  }
+  // if (login && !hasTicket) {
+  //   return (
+  //     <div className=" w-full">
+      
+  //     </div>
+  //   )
+  // }
+
+
+
+
   return (
-    <div>
-      {showSplash ? (
-        <>
-          <Stepper checkerRoute={checkRoute} />
-        </>
-      ) : (
-        <div className="">
-          <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>
-            <Header />
-            <main className="mb-auto">{children}</main>
-          </SearchProvider>
-          <Footer />
+   
+        <div>
+          {showSplash ? (
+            <>
+              <Stepper checkerRoute={checkRoute} setOpenStepModal={setOpenStepModal} openStepModal={openStepModal} />
+            </>
+          ) : (
+            <div className="">
+            {/* <Stepper checkerRoute={checkRoute} setOpenStepModal={setOpenStepModal} openStepModal={openStepModal} /> */}
+              <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>
+              
+                <GlobalHeader />
+                <OtherHeader noLocalModal={true} />
+            <QuestionModal checkerRoute={checkRouteQuestion} setQuestionModalOpen={setQuestionModalOpen} questionModalOpen={questionModalOpen}></QuestionModal>
+                {/* <main className="mx-auto  w-full max-w-screen-xl items-center justify-between gap-x-4 px-4 md:justify-normal md:px-8 py-3 ">{children}</main> */}
+              </SearchProvider>
+              <Footer />
+            </div>
+          )}
         </div>
-      )}
-    </div>
-  )
+      
+      )
 }
 
 export default Wrapper

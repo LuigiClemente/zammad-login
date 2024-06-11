@@ -15,6 +15,10 @@ const Question = ({
   handleOptionClick,
   isError,
   image,
+  currentQuestion,
+  numOfQuestion,
+  isFirstStep,
+  handlePrev
 }) => {
   const [selectedOption, setSelectedOption] = useState('')
 
@@ -28,18 +32,13 @@ const Question = ({
       handleClick(option, name)
     }
   }
-
   const renderRadioOptions = () => (
     <div className="flex flex-col">
-      {isError && error[name] && (
-        <p className="mb-2 uppercase text-red-500">
-          {'Kindly select an option to proceed to the next step.'}
-        </p>
-      )}
+     
       {options.map((option, index) => (
         <div
           key={name + index}
-          className="mb-1 mt-5 cursor-pointer rounded p-2"
+          className="mb-1 mt-1 cursor-pointer rounded flex items-center"
           onClick={() => handleOptionClick(option, name)}
           role="button"
           tabIndex={0}
@@ -51,7 +50,7 @@ const Question = ({
             id={name + index}
             name={name}
             value={option}
-            // className="appearance-none focus:border-designColor focus:outline-none focus:ring active:border-designColor active:outline-none active:ring"
+            className="appearance-none h-4 w-4 border border-gray-300 rounded-full checked:bg-[#f8e43f] focus:outline-none transition duration-200 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer  text-[#f8e43f] shadow-none"
           />
           <label
             htmlFor={name + index}
@@ -67,38 +66,46 @@ const Question = ({
           name="otherOption"
           required={true}
           placeholder="Enter other option"
-          className={'text-grey-600 mb-2'}
+          className="text-gray-600 mt-3 p-2 rounded border border-gray-300 focus:border-[#f8e43f] "
         />
       )}
+
+
+{isError && error[name] && (
+        <p className="mb-2 text-sm uppercase text-red-500 mt-2">
+          {'Kindly select an option to proceed to the next step.'}
+        </p>
+      )}
     </div>
-  )
+  );
+
+
 
   const renderInputOptions = () =>
     type === 'input' &&
     options.map((option, index) => (
       <div key={name + index}>
+
+
         <InputNumber
           label={option}
           name={name}
           register={register}
           error={error[name]}
-          css={'w-[120px]'}
+          css={' text-gray-600 mt-3 p-2 rounded border border-gray-300 focus:border-[#f8e43f] '}
           isError={isError}
           part={name}
+
         />
       </div>
     ))
   const renderCheckboxOptions = () => (
     <div className="flex flex-col">
-      {isError && error[name] && (
-        <p className="mb-2 uppercase text-red-500">
-          {'Kindly select an option to proceed to the next step.'}
-        </p>
-      )}
+      
       {options.map((option, index) => (
         <div
           key={name + index}
-          className="mb-4 mt-5 cursor-pointer rounded p-2"
+          className="mb-2 cursor-pointer rounded "
           role="button"
           tabIndex={0}
           onClick={() => handleOptionClick(option, name)}
@@ -110,7 +117,7 @@ const Question = ({
             id={name + index}
             name={name}
             value={option}
-            // className="appearance-none focus:border-designColor focus:outline-none focus:ring active:border-designColor active:outline-none active:ring"
+            className="appearance-none text-[#f8e43f]"
           />
           <label
             htmlFor={name + index}
@@ -120,6 +127,11 @@ const Question = ({
           </label>
         </div>
       ))}
+      {isError && error[name] && (
+        <p className="mb-2 text-sm uppercase text-red-500 mt-2">
+          {'Kindly select an option to proceed to the next step.'}
+        </p>
+      )}
     </div>
   )
 
@@ -134,8 +146,30 @@ const Question = ({
         alt="avatar"
         className="h-100 w-full"
       />
+     <div className='p-3'>
+     <div className="flex w-[100%] flex-row justify-between">
+          {currentQuestion !== 0 ? (
+            <button
+              onClick={handlePrev}
+              className="mb-1 mr-6 bg-transparent text-base font-bold uppercase hover:underline"
+              disabled={isFirstStep}
+            >
+              Return
+            </button>
+          ) : (
+            <div></div>
+          )}
+          {/* <QuestionNav
+            handleStepper={handleStepper}
+            currentQuestion={currentQuestion}
+            questionsList={questionsList}
+          /> */}
+          <div>
+            {currentQuestion + 1} / {numOfQuestion}
+          </div>
+        </div>
       <div>
-        <h3 className="regal-black mb-5 mt-5 font-sans font-medium text-subTitleLM dark:text-gray-100">
+        <h3 className="regal-black mb-2 mt-2 font-sans font-medium text-subTitleLM dark:text-gray-100">
           {question}
         </h3>
         <div>
@@ -144,6 +178,7 @@ const Question = ({
           {type === 'checkbox' && renderCheckboxOptions()}
         </div>
       </div>
+     </div>
     </div>
   )
 }

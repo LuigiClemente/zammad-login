@@ -1,6 +1,6 @@
 import 'css/tailwind.css'
 import 'pliny/search/algolia.css'
-import '../../css/loginForm.css'
+import '../globals.css'
 
 import { ClerkProvider } from '@clerk/nextjs'
 import LayoutWrapper from '@/components/LayoutWrapper'
@@ -13,6 +13,8 @@ import { ThemeProviders } from './theme-providers'
 import { AppProvider } from 'provider/AppProvider'
 import { StateProvider } from 'provider/StateProvider'
 import { NextIntlClientProvider, useMessages } from 'next-intl'
+import QuestionModal from '@/components/QuestionForm'
+import { ModalProvider } from 'react-simple-modal-provider'
 
 const space_grotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -86,6 +88,8 @@ export default function RootLayout({
       <body className="bg-lightGreen text-black antialiased dark:bg-lightBlack dark:text-white">
         <ThemeProviders>
           <NextIntlClientProvider locale={locale} messages={messages}>
+          
+
             <ClerkProvider>
               <AppProvider>
                 <StateProvider>
@@ -96,6 +100,7 @@ export default function RootLayout({
                 </StateProvider>
               </AppProvider>
             </ClerkProvider>
+
           </NextIntlClientProvider>
         </ThemeProviders>
       </body>

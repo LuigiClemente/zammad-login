@@ -1,13 +1,32 @@
 import { QUESTION_DATA } from '@/data/questionData'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { REGISTER_SCHEMA } from '../app/[locale]/yup/Validation'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Resolver, SubmitHandler, useForm } from 'react-hook-form'
 import ModalSubmit from './ModalSubmit'
 import Question from './Question'
 import SplashHeader from './SplashHeader'
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Modal } from 'react-responsive-modal';
 
-const QuestionForm = ({ checkerRoute }) => {
+import 'react-responsive-modal/styles.css';
+import { GlobalHeader } from './global-header'
+import { OtherHeader } from './other-header'
+
+
+
+
+const QuestionModal = ({checkerRoute , setQuestionModalOpen , questionModalOpen  }) => {
+
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [stepValueChecker, setStepValueChecker] = useState(null)
   const [isLastStep, setIsLastStep] = useState(false)
@@ -128,33 +147,15 @@ const QuestionForm = ({ checkerRoute }) => {
   }, [isSubmitSuccessful, reset])
 
   return (
-    <div className="bg-transparents flex h-full flex-col items-center justify-center overflow-y-hidden">
-      <SplashHeader checkerRoutes={checkerRoute} />
+   
+   <>
+   
+   
       <form
-        className="flex w-full flex-col justify-between rounded bg-darkGreen p-6 shadow-md dark:bg-blackDark"
+        className="flex w-full max-w-xl flex-col justify-between rounded bg-darkGreen   dark:bg-blackDark questions mx-auto"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <div className="flex w-[100%] flex-row justify-between">
-          {currentQuestion !== 0 ? (
-            <button
-              onClick={handlePrev}
-              className="mb-4 mr-6 bg-transparent text-base font-bold uppercase hover:underline"
-              disabled={isFirstStep}
-            >
-              Return
-            </button>
-          ) : (
-            <div></div>
-          )}
-          {/* <QuestionNav
-            handleStepper={handleStepper}
-            currentQuestion={currentQuestion}
-            questionsList={questionsList}
-          /> */}
-          <div>
-            {currentQuestion + 1} / {numOfQuestion}
-          </div>
-        </div>
+        
         <Question
           question={questionsList[currentQuestion].question}
           options={questionsList[currentQuestion].options}
@@ -166,12 +167,19 @@ const QuestionForm = ({ checkerRoute }) => {
           stepValueChecker={stepValueChecker}
           handleOptionClick={handleOptionClick}
           isError={isError}
+          currentQuestion={currentQuestion}
+          handlePrev={handlePrev}
+          isFirstStep={isFirstStep}
+          numOfQuestion={numOfQuestion}
         />
+
+        
+        <div className='p-3'>
         {!isLastStep && (
           <button
             onClick={handleNext}
-            className={`mb-3 w-full flex-grow-0 rounded px-6 pb-2 pt-2.5  text-base font-bold uppercase leading-normal text-txtWhite`}
-            style={{ background: 'linear-gradient(to right, #235475, #56a4d9, #3e95d0, #1495ea)' }}
+            className="btn-primary w-full bg-[#2ae8d3] "
+         
           >
             Continue
           </button>
@@ -179,12 +187,13 @@ const QuestionForm = ({ checkerRoute }) => {
         {isLastStep && (
           <button
             type="submit"
-            className={`mb-3 w-full flex-grow-0 rounded px-6 pb-2 pt-2.5 text-base font-bold uppercase  leading-normal text-txtWhite`}
-            style={{ background: 'linear-gradient(to right, #235475, #56a4d9, #3e95d0, #1495ea)' }}
+           className="btn-primary w-full bg-[#2ae8d3] "
+           
           >
             Submit
           </button>
         )}
+        </div>
       </form>
       {isLastStep && (
         <ModalSubmit
@@ -193,8 +202,12 @@ const QuestionForm = ({ checkerRoute }) => {
           handleSave={checkerRoute}
         />
       )}
-    </div>
+
+
+   
+   </>
+   
   )
 }
 
-export default QuestionForm
+export default QuestionModal

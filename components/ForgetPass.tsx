@@ -33,7 +33,7 @@ const ForgetPass = ({ loginCheck, forgetPassHandler }) => {
 
   const [langOpen, setLangOpen] = useState<boolean>(false)
   return (
-    <section>
+    <section  className='auth-form'>
       <div className="custom-container">
         <Navigation
           navOpen={navOpen}

@@ -10,8 +10,11 @@ import { StepFour } from './StepFour'
 import { StepFive } from './StepFive'
 import SplashHeader from '../SplashHeader'
 import { useAppProvider } from 'provider/AppProvider'
+import { Modal } from 'react-responsive-modal';
 
-const Stepper = ({ checkerRoute }) => {
+import 'react-responsive-modal/styles.css';
+
+const Stepper = ({ checkerRoute  , openStepModal , setOpenStepModal}) => {
   const router = useRouter()
   const appProviderContext = useAppProvider()
 
@@ -44,7 +47,8 @@ const Stepper = ({ checkerRoute }) => {
   oranges.push(currentStep + 1)
 
   return (
-    <section className="mx-auto max-w-5xl">
+    <Modal open={openStepModal} onClose={()=>{ setOpenStepModal(false)}} center >
+    <section className="mx-auto max-w-5xl stepper">
       <style>
         {`
       .step-border {
@@ -59,10 +63,10 @@ const Stepper = ({ checkerRoute }) => {
         .map(
           (i) => `
       .step-border.step${i} {
-        border-color: green;
+        border-color: #159789;
       }
       .color${i} {
-        color: green;
+        color: #159789;
       }
       `
         )
@@ -71,10 +75,10 @@ const Stepper = ({ checkerRoute }) => {
         .map(
           (i) => `
       .step-border.step${i} {
-        border-color: orange;
+        border-color: #fc710b;
       }
       .color${i} {
-        color: orange;
+        color: #fc710b;
       }
       `
         )
@@ -84,19 +88,19 @@ const Stepper = ({ checkerRoute }) => {
           (i) => `
       .step-border.step${i} {
         --tw-text-opacity: 1;
-        border-color: gray;
+        border-color: #fec02f;
       }
       .color${i} {
         --tw-text-opacity: 1;
-        color: gray;
+        color: #fec02f;
       }
       `
         )
         .join('')}
     `}
       </style>
-      <div>
-        <SplashHeader checkerRoutes={checkerRoute} />
+      <div className='mt-10'>
+      
         <StepOne stepRefs={stepRefs} checkerRoute={checkerRoute} stepperData={stepperData} />
         <StepTwo
           stepRefs={stepRefs}
@@ -123,8 +127,9 @@ const Stepper = ({ checkerRoute }) => {
           stepperData={stepperData}
         />
       </div>
-      <Footer />
+     
     </section>
+    </Modal>
   )
 }
 

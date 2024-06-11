@@ -53,7 +53,7 @@ const PageLogin = ({ loginCheck, forgetPassHandler }) => {
   }
 
   return (
-    <section>
+    <section className='auth-form'>
       <div className="custom-container">
         <Navigation
           navOpen={navOpen}
