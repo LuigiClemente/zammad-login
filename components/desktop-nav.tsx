@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
 import { AlgoliaButton } from 'pliny/search/AlgoliaButton';
 import SearchButton from './SearchButton';
+import { useTranslations } from 'next-intl';
 
 
 export type DesktopNavProps = HTMLAttributes<HTMLDivElement> & {
@@ -18,14 +19,15 @@ export type DesktopNavProps = HTMLAttributes<HTMLDivElement> & {
 
 export const DesktopNav = ({noLocalModal, className, setIsCommandMenuOpen, ...props }: DesktopNavProps) => {
   
+  const t =  useTranslations('Navigation');
 
-const navigationLinks = !noLocalModal ?[
-  {
-    href: '/blog',
-    label: 'Blog',
-  },
+// const navigationLinks = !noLocalModal ?[
+//   {
+//     href: '/blog',
+//     label: 'Blog',
+//   },
  
-]: [];
+// ]: [];
 
   const pathname = usePathname();
   const params = useParams();
@@ -51,7 +53,7 @@ const navigationLinks = !noLocalModal ?[
       {...props}
     >
       <div className="flex items-baseline gap-x-6">
-        {navigationLinks.map(({ href, label }) => (
+        {/* {navigationLinks.map(({ href, label }) => (
           <Link
             key={href}
             href={`${rootHref}${href}`}
@@ -66,7 +68,7 @@ const navigationLinks = !noLocalModal ?[
           >
             {label}
           </Link>
-        ))}
+        ))} */}
       </div>
 
  <SearchButton>
@@ -78,7 +80,7 @@ const navigationLinks = !noLocalModal ?[
       >
         <div className="flex items-center">
           <Search className="mr-2 h-5 w-5" />
-          Search
+          {t('Search')}
         </div>
 
         <div>

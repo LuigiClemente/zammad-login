@@ -1,4 +1,4 @@
-import { QUESTION_DATA } from '@/data/questionData';
+
 import { yupResolver } from '@hookform/resolvers/yup';
 import { REGISTER_SCHEMA } from '../app/[locale]/yup/Validation';
 import { useEffect, useMemo, useState } from 'react';
@@ -7,10 +7,12 @@ import ModalSubmit from './ModalSubmit';
 import Question from './Question';
 import useLocalStorage from 'use-local-storage';
 import 'react-responsive-modal/styles.css';
-import { GlobalHeader } from './global-header';
-import { OtherHeader } from './other-header';
+import { useQuestions } from 'hooks/useQuestions';
+import { useTranslations } from 'next-intl';
+
 
 const QuestionModal = ({ checkerRoute, setQuestionModalOpen, questionModalOpen }) => {
+  const QUESTION_DATA = useQuestions();
   const [currentQuestion, setCurrentQuestion] = useLocalStorage('currentQuestion', 0);
   const [answers, setAnswers] = useLocalStorage('answers', {});
   const [isLastStep, setIsLastStep] = useState(false);
@@ -53,8 +55,11 @@ const QuestionModal = ({ checkerRoute, setQuestionModalOpen, questionModalOpen }
   };
 
   const handlePrev = () => {
+    console.log('Handling prev')
     setCurrentQuestion((current:any) => {
       const newCurrent = Math.max(0, current - 1);
+      console.log({newCurrent});
+
       setIsFirstStep(newCurrent === 0);
       setIsLastStep(false);
       return newCurrent;
@@ -87,15 +92,17 @@ const QuestionModal = ({ checkerRoute, setQuestionModalOpen, questionModalOpen }
       setValue(name, answers[name]);
     });
   }, [setValue, answers]);
-
+const t = useTranslations('Questions');
   useEffect(() => {
     const filteredQuestions = QUESTION_DATA.filter(question => 
       !((!isFemale && question.gender === 'female') || (question.name === 'weightGoal' && !haveWeightGoal))
     );
+    console.log('In Use Effect')
+    console.log({currentQuestion , filteredQuestions})
     if (currentQuestion >= filteredQuestions.length) {
       setCurrentQuestion(filteredQuestions.length - 1);
     }
-  }, [isFemale, haveWeightGoal, currentQuestion]);
+  }, []);
 
   const onSubmit = async (values) => {
     console.log('Submitting form with values:', values);
@@ -138,14 +145,14 @@ const QuestionModal = ({ checkerRoute, setQuestionModalOpen, questionModalOpen }
               onClick={handleNext}
               className="btn-primary w-full bg-[#2ae8d3]"
             >
-              Continue
+              {t('Continue')}
             </button>
           ) : (
             <button
               type="submit"
               className="btn-primary w-full bg-[#2ae8d3]"
             >
-              Submit
+              {t('Submit')}
             </button>
           )}
         </div>

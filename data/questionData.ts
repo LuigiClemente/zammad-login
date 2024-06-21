@@ -7,22 +7,7 @@ export const QUESTION_DATA = [
     name: 'fruits',
     image: 'How many plants do you consume_.png',
   },
-  {
-    question: 'Which health goal is most important to you? You can add more goals later.',
-    options: [
-      'Healthy Aging / Longevity',
-      'Intestinal Health',
-      'Strength / Physical Performance',
-      'Heart Health (avoiding heart attacks, strokes, high blood pressure, etc.)',
-      'Brain Health',
-      'Reducing the risk of diabetes',
-      'Immune System Health',
-      'Other',
-    ],
-    type: 'radio',
-    name: 'healthGoal',
-    image: 'Which health goal is most important to you_.png',
-  },
+ 
   {
     question: 'Which health goal is most important to you? You can add more goals later.',
     options: [

@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { Sheet, SheetContent } from './ui/sheet';
+import useLinks from 'hooks/useLinks';
 
 
 export type MobileNavigationProps = {
@@ -14,7 +15,7 @@ export type MobileNavigationProps = {
 
 export const MobileNavigation = ({ isMenuOpen, onMenuOpenChange , noLocalModal }: MobileNavigationProps) => {
   const params = useParams();
-
+  const {menuNavigationLinks} = useLinks();
   const handleMenuItemClick = () => {
     onMenuOpenChange?.(false);
   };
@@ -39,10 +40,7 @@ export const MobileNavigation = ({ isMenuOpen, onMenuOpenChange , noLocalModal }
       text: 'Contact Us',
     },
     ...(!noLocalModal ? [
-      {
-        href: '/settings/teams',
-        text: 'User Settings',
-      },
+   
       {
         href: '/settings/profile',
         text: 'Admin Panel',

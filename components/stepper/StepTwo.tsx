@@ -18,7 +18,7 @@ export const StepTwo = ({ stepRefs, router, checkerRoute, stepperData }) => {
             }}
           >
             <div className="color2 text-3xl font-black">{`${stepperData[1].step}`}</div>
-            <div className="color2 text-sm">{`${stepperData[1].title}`}</div>
+           
           </div>
           <div className="h-full border-r-4 border-transparent">
             <div className="animate-color-change step-border step2 ml-4 h-full border-l-4 border-solid"></div>

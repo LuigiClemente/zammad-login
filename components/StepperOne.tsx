@@ -11,9 +11,12 @@ import stepperData from '@/data/stepperData '
 import SplashHeader from './SplashHeader'
 import { useRouter } from 'next/navigation'
 import Footer from './Footer'
+import { routes } from '@/lib/routes'
+import { useLocale } from 'next-intl'
 const Stepper = ({ checkerRoute }) => {
   const [isVisible, setIsVisible] = useState(true)
   const router = useRouter()
+  const locale = useLocale();
 
   // Use useEffect to hide the loading spinner after 3 seconds
   // useEffect(() => {
@@ -107,7 +110,7 @@ const Stepper = ({ checkerRoute }) => {
               className="step-border step1-border mr-4 flex w-32 flex-col items-center justify-center rounded border py-5 uppercase"
               ref={stepRefs[0]}
               onClick={() => {
-                router.push('/')
+                router.push(routes[locale]['resources'])
                 checkerRoute()
               }}
             >

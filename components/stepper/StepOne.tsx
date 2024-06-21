@@ -16,7 +16,7 @@ export const StepOne = ({ stepRefs, checkerRoute, stepperData }) => {
             }}
           >
             <div className="color color1 text-3xl font-black">{`${stepperData[0].step}`}</div>
-            <div className="color1 text-sm text-subTitleLM">{`${stepperData[0].title}`}</div>
+          
           </div>
           <div className="h-full border-l-4 border-transparent">
             <div className="step-border step1-border step1  animate-color-change mr-4 h-full border-l-4 border-solid"></div>
@@ -25,7 +25,7 @@ export const StepOne = ({ stepRefs, checkerRoute, stepperData }) => {
         <div className="step-border step1 flex-auto rounded border ">
           <div className="flex flex-col items-center md:flex-row">
             <div className="flex-auto">
-              <div className="pl-3 pt-3 text-sm font-normal uppercase text-neutral-200 md:hidden">
+              <div className="pl-3 pt-3 text-sm font-normal uppercase color1 md:hidden">
                 <span className="font-black dark:text-white">{`${stepperData[0].step}`}</span> -{' '}
                 {`${stepperData[0].title}`}
               </div>

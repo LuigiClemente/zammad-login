@@ -5,7 +5,7 @@
   "scripts": {
     "start": "next dev -p 8080",
     "dev": "cross-env INIT_CWD=$PWD next dev -p 7005",
-    "build": "cross-env INIT_CWD=$PWD next build && node ./scripts/postbuild.mjs",
+    "build": "npx contentlayer build && next build && cross-env NODE_OPTIONS='--experimental-json-modules' node ./scripts/postbuild.mjs",
     "serve": "next start",
     "analyze": "cross-env ANALYZE=true next build",
     "lint": "next lint --fix --dir pages --dir app --dir components --dir lib --dir layouts --dir scripts"

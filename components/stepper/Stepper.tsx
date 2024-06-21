@@ -1,5 +1,5 @@
 'use client'
-import stepperData from '@/data/stepperData '
+
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import Footer from '../Footer'
@@ -13,10 +13,14 @@ import { useAppProvider } from 'provider/AppProvider'
 import { Modal } from 'react-responsive-modal';
 
 import 'react-responsive-modal/styles.css';
+import { useStepper } from 'hooks/useStepper'
+import { routes } from '@/lib/routes'
+import { useLocale } from 'next-intl'
 
 const Stepper = ({ checkerRoute  , openStepModal , setOpenStepModal}) => {
   const router = useRouter()
   const appProviderContext = useAppProvider()
+  const stepperData =useStepper();
 
   const { currentStep } = appProviderContext
   const stepRefs = [
@@ -26,11 +30,11 @@ const Stepper = ({ checkerRoute  , openStepModal , setOpenStepModal}) => {
     useRef<HTMLDivElement>(null),
     useRef<HTMLDivElement>(null),
   ]
-
+const locale  =useLocale();
   useEffect(() => {
     if (currentStep === 5) {
       // If the current step is 5, navigate to another page using Next.js router
-      router.push('/') // Replace '/your-target-page' with the actual target page path
+      router.push(routes[locale]['resources'])// Replace '/your-target-page' with the actual target page path
       checkerRoute()
     }
   }, [currentStep, checkerRoute, router])

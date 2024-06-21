@@ -1,6 +1,9 @@
 import React from 'react'
+import { useTranslations } from 'next-intl';
+
 
 const ModalSubmit = ({ modalVisible, toggleModal, handleSave }) => {
+  const t = useTranslations('Questions');
   return (
     <>
       {modalVisible && (
@@ -9,7 +12,7 @@ const ModalSubmit = ({ modalVisible, toggleModal, handleSave }) => {
           <div className="z-10  rounded-lg bg-darkGreen shadow-md dark:bg-lightBlack">
             <div className="flex items-center justify-between rounded-t border-b  dark:border-gray-600">
               <h3 className="pl-2 text-xl font-semibold text-gray-900 dark:text-white">
-                Confirmation
+                {t('Confirmation')}
               </h3>
               <button
                 type="button"
@@ -36,7 +39,7 @@ const ModalSubmit = ({ modalVisible, toggleModal, handleSave }) => {
               </button>
             </div>
             <div className="m-2">
-              <p className="p-4 text-txt dark:text-neutral-200">Are Sure you want to Submit?</p>
+              <p className="p-4 text-txt dark:text-neutral-200"> {t('ensure_submit')}</p>
 
               <button
                  className="btn-primary w-full bg-[#2ae8d3]"
@@ -48,7 +51,7 @@ const ModalSubmit = ({ modalVisible, toggleModal, handleSave }) => {
                   handleSave
                 }}
               >
-                submit
+                 {t('Submit')}
               </button>
             </div>
           </div>

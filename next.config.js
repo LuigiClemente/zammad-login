@@ -5,6 +5,7 @@ const withNextIntl = createNextIntlPlugin();
 const nextConfig = {
  
   images: {
+    
     remotePatterns: [
       {
         protocol: 'https',
@@ -14,6 +15,7 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'picsum.photos',
       },
+   
     ],
   },
 };

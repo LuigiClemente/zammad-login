@@ -8,7 +8,7 @@ export const StepFour = ({ stepRefs, router, checkerRoute, stepperData }) => {
             ref={stepRefs[3]}
           >
             <div className="color4 text-3xl font-black ">{`${stepperData[3].step}`}</div>
-            <div className="color4 text-sm text-subTitleLM">{`${stepperData[3].title}`}</div>
+          
           </div>
           <div className="h-full border-r-4 border-transparent">
             <div className="animate-color-change step-border step4 ml-4 h-full border-l-4 border-solid"></div>
@@ -17,7 +17,7 @@ export const StepFour = ({ stepRefs, router, checkerRoute, stepperData }) => {
         <div className="step-border step4 flex-auto rounded border">
           <div className="flex flex-col items-center md:flex-row">
             <div className="flex-auto">
-              <div className="pl-3 pt-3 text-sm font-normal uppercase text-neutral-200 md:hidden">
+              <div className="pl-3 pt-3 text-sm font-normal uppercase color4 md:hidden">
                 <span className="color color4 font-black">{`${stepperData[3].step}`}</span> -{' '}
                 {`${stepperData[3].title}`}
               </div>

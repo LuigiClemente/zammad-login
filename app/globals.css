@@ -180,5 +180,22 @@ body:not(:has(.auth-form)) {
 
  
     div[data-radix-popper-content-wrapper]{
-      z-index: 9999 !important;
+      z-index: 99 !important;
+    }
+    .bg-primary-600{
+background-color: #2AE8D3 !important;
+    }
+    .p-4.backdrop-blur.backdrop-filter{
+   
+      z-index: 10000 !important;
+    }
+
+    input[aria-controls="kbar-listbox"]:focus{
+      outline: none;
+      box-shadow: none;
+      border: 2px solid  #2AE8D3;
+    }
+    .text-primary-600 {
+color: #2AE8D3 !important;
+
     }

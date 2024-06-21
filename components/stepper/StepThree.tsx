@@ -16,7 +16,7 @@ export const StepThree = ({ stepRefs, router, checkerRoute, stepperData }) => {
             }}
           >
             <div className="color3 color color3 text-3xl font-black">{`${stepperData[2].step}`}</div>
-            <div className="color3 text-sm text-subTitleLM">{`${stepperData[2].title}`}</div>
+         
           </div>
           <div className="h-full border-l-4 border-transparent">
             <div className="animate-color-change step-border step3 mr-4 h-full border-l-4 border-solid"></div>
@@ -25,7 +25,7 @@ export const StepThree = ({ stepRefs, router, checkerRoute, stepperData }) => {
         <div className="step-border step3 flex-auto rounded border">
           <div className="flex flex-col items-center md:flex-row">
             <div className="flex-auto">
-              <div className="pl-3 pt-3 text-sm font-normal uppercase text-neutral-200 md:hidden">
+              <div className="pl-3 pt-3 text-sm font-normal uppercase color3 md:hidden">
                 <span className="color color3 font-black">{`${stepperData[2].step}`}</span> -{' '}
                 {`${stepperData[2].title}`}
               </div>

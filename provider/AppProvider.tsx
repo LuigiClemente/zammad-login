@@ -1,6 +1,8 @@
 'use client'
 import React, { createContext, useContext, useState } from 'react'
 import initHeaderNavLinks from '@/data/headerNavLinks'
+import Cookies from 'js-cookie'
+
 export type HeaderNavLinks = {
   href: string;
   title: string;
@@ -27,6 +29,9 @@ interface AppContextProps {
   setHeaderNavLinks: React.Dispatch<React.SetStateAction<HeaderNavLinks>>
   invited: boolean
   setInvited: React.Dispatch<React.SetStateAction<boolean>>
+  userData : any , 
+  setUserData : React.Dispatch<React.SetStateAction<any>>,
+  logout : ()=>void
 }
 
 const Context = createContext<AppContextProps>({} as AppContextProps)
@@ -42,14 +47,27 @@ export const AppProvider = ({ children }) => {
   const [currentStep, setCurrentStep] = useState(1)
   const [headerNavLinks, setHeaderNavLinks] = useState(initHeaderNavLinks)
   const [invited, setInvited] = useState(false)
+  const [userData , setUserData]=  useState<any>(null);
+
+
+  const logout = ()=>{
+setLogin(false);
+Cookies.remove('auth_token');
+
+  }
+
+
 
   return (
     <Context.Provider
       value={{
+        userData,
+        setUserData,
         hasTicket,
         setHasTicket,
         login,
         setLogin,
+        logout,
         showSplash,
         setShowSplash,
         isForget,

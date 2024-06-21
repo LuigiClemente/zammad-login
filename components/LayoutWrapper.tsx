@@ -18,6 +18,7 @@ import { GlobalHeader } from './global-header'
 import { OtherHeader } from './other-header'
 import { ModalProvider } from 'react-simple-modal-provider'
 import QuestionModal from './QuestionForm'
+import { useTranslations } from 'next-intl'
 // import { OtherHeader } from './header'
 
 interface Props {
@@ -38,9 +39,10 @@ const Wrapper = ({ children }: Props) => {
   const [questionModalOpen, setQuestionModalOpen] = useState<boolean>(true);
   const [openStepModal, setOpenStepModal] = useState<boolean>(true);
 
-
   const {
     login,
+    userData , 
+    setUserData,
     setLogin,
     setHasTicket,
     hasTicket,
@@ -81,12 +83,17 @@ const Wrapper = ({ children }: Props) => {
             Authorization: `Token token=${authToken}`,
           },
         }),
+
         HTTPClient.getInstance().client.get(`roles`, {
           headers: {
             Authorization: `Token token=${process.env.NEXT_PUBLIC_ZAMMAD_TOKEN}`,
           },
         }),
       ])
+
+      setUserData(res[0].data)
+
+     
       const userRoles = res[0].data.role_ids.map(
         (id: number) => res[1].data.find((role: { id: number; name: string }) => role.id == id).name
       )
@@ -99,7 +106,7 @@ const Wrapper = ({ children }: Props) => {
         setInvited(true)
       }
     })()
-  }, [setAuthToken, setEmail, setHeaderNavLinks, setInvited])
+  }, [authToken,setAuthToken, setEmail, setHeaderNavLinks, setInvited])
 
   const showStepper = useCallback(() => {
     setShowSplash(true)
@@ -139,7 +146,20 @@ const Wrapper = ({ children }: Props) => {
     [authToken, setCurrentStep, showStepper]
   )
 
+  const t = useTranslations('Navigation');
   useEffect(() => {
+   setInterval(()=>{
+    if (typeof window !== 'undefined') {
+      const inputElement = document.querySelector<HTMLInputElement>(
+        'input[role="combobox"][aria-controls="kbar-listbox"]'
+      );
+      if (inputElement) {
+inputElement.setAttribute('placeholder' , t('search_prompt'))
+
+     
+      }
+    }
+   }, 1000)
     let executeTimeout
     ;(async () => {
       if (authToken && authToken.length && email && email.length) {
@@ -303,9 +323,9 @@ const Wrapper = ({ children }: Props) => {
             
 
           
-          
                 <main className="mx-auto  w-full max-w-screen-xl items-center justify-between gap-x-4 px-4 md:justify-normal md:px-8 py-3 ">{children}</main> 
                 
+                  
               </SearchProvider>
              <Footer /> 
             </div>

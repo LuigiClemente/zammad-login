@@ -11,10 +11,13 @@ import stepperData from '@/data/stepperData '
 import SplashHeader from './SplashHeader'
 import { useRouter } from 'next/navigation'
 import Footer from './Footer'
+import { routes } from '@/lib/routes'
+import { useLocale } from 'next-intl'
 const Stepper = ({ checkerRoute }) => {
   const [isVisible, setIsVisible] = useState(true)
   const router = useRouter()
 
+  const locale = useLocale();
   return (
     <section className="mx-auto max-w-5xl py-10">
       <div>
@@ -24,7 +27,7 @@ const Stepper = ({ checkerRoute }) => {
             <div
               className="mr-4 flex w-32 flex-col items-center justify-center rounded border border-green-500 py-5 uppercase"
               onClick={() => {
-                router.push('/')
+                router.push(routes[locale]['resources'])
                 checkerRoute()
               }}
             >
