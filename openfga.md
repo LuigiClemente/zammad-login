@@ -1,9 +1,9 @@
 You can adapt a similar approach to manage invitation counts for users, using conditional relationships in OpenFGA and updating them from your Camunda workflow. Here’s how it could work:
 
 1. **Defining the Concept of "Invitations Allowed" as a Condition**:  
-   Instead of a time-based condition (like in the provided example with `non_expired_grant`), you would define a condition that depends on the number of remaining invitations. For example, let’s say you have a relationship that grants the user permission to send invitations. We can imagine a condition `has_invitations_left` that checks if the number of allowed invitations is greater than zero.
+   Instead of a time-based condition (like in the provided example with `non_expired_grant`), you would define a condition that depends on the number of remaining invitations. For example, the family plan admin relationship grants the user permission to send invitations. We can imagine a condition `has_invitations_left` that checks if the number of allowed invitations is greater than zero.
 
-   For instance, you might define a model where a user is granted the right to "invite" on your application object if they still have invitations left:
+   For example, you might define a model where a user is granted the right to "invite" on your application object if they still have invitations left:
    ```  
    model
      schema 1.1
@@ -81,8 +81,8 @@ You can adapt a similar approach to manage invitation counts for users, using co
    
    Note that for this particular condition, the value of `remaining_invitations` is fully maintained on the backend side (persisted in the relationship tuple). When you do a check, the persisted context in OpenFGA already includes the current `remaining_invitations`. If `remaining_invitations` is 0, `allowed` will return `false`.
 
-5. **Would This Work?**  
-   Yes, this approach should work. OpenFGA’s conditional tuples can enforce conditions at authorization check time. By coupling your invitation logic to these conditions:
+5. **How This Work?**  
+   OpenFGA’s conditional tuples can enforce conditions at authorization check time. By coupling your invitation logic to these conditions:
    
    - **Camunda** updates the condition context after each invitation is sent (or any other business logic event).
    - **OpenFGA** enforces that the user can only perform the action (e.g., send invitations) if the condition (`remaining_invitations > 0`) is met.
