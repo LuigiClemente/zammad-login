@@ -1,3 +1,62 @@
+   You can check the conditions using OpenFGA’s built-in APIs. When you issue a `check` or `listObjects` query, OpenFGA automatically evaluates any conditions that are defined on the relationship tuples.
+
+**How Conditions Are Evaluated:**
+
+1. **Write the Conditional Relationship Tuple**:  
+   When you write a relationship tuple with a condition, you supply the condition’s context (parameters). This context is stored alongside the tuple.
+
+   For example:
+   ```js
+   await fgaClient.write({
+     writes: [
+       {
+         user: "user:alice",
+         relation: "can_invite",
+         object: "application:my_app",
+         condition: {
+           name: "has_invitations_left",
+           context: { "remaining_invitations": "5" }
+         }
+       }
+     ]
+   });
+   ```
+
+2. **Check or ListObjects Requests**:  
+   When you later call `check` to see if a user has a relationship to an object, OpenFGA will evaluate the stored condition. If the condition returns true, `allowed` will be `true`; otherwise, `false`.
+
+   For example, to see if `alice` can invite:
+   ```js
+   const { allowed } = await fgaClient.check({
+     user: "user:alice",
+     relation: "can_invite",
+     object: "application:my_app"
+   });
+   // If `remaining_invitations > 0`, allowed will be true; otherwise false.
+   ```
+
+   You do not need to provide the `remaining_invitations` in the check request context if it’s already stored in the tuple. If you do provide it, note that the value stored in the tuple will take precedence.
+
+   Similarly, if you want to list all objects that `alice` can invite on:
+   ```js
+   const response = await fgaClient.listObjects({
+     user: "user:alice",
+     relation: "can_invite",
+     type: "application"
+   });
+   // response.objects will contain only those applications for which the condition `remaining_invitations > 0` is true.
+   ```
+
+**Key Points:**
+
+- **No Separate Condition Query**: You don’t need a special "condition check" endpoint. Conditions are evaluated at query-time during normal `check` and `listObjects` calls.
+- **Request Context vs. Persisted Context**: If you provide context parameters during a query request, they merge with the stored context. The persisted (stored) context always takes precedence.
+- **Automatic Evaluation**: OpenFGA handles the condition evaluation internally using the parameters and condition expressions you defined in your model.
+
+
+
+
+
 You can adapt a similar approach to manage invitation counts for users, using conditional relationships in OpenFGA and updating them from your Camunda workflow. Here’s how it could work:
 
 1. **Defining the Concept of "Invitations Allowed" as a Condition**:  
